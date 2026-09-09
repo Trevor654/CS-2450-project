@@ -52,19 +52,19 @@ class CPU:
             # print("value:", value)
 
             if command == '10':
-                self.__READ()
+                self.__READ(value)
                 # print("reading")
 
             elif command == '11':
-                self.__WRITE()
+                self.__WRITE(value)
                 # print("writing")
 
             elif command == '20':
-                self.__LOAD()
+                self.__LOAD(value)
                 # print("loading")
 
             elif command == '21':
-                self.__STORE()
+                self.__STORE(value)
                 # print("storing")
 
             elif command == '30':
@@ -109,17 +109,22 @@ class CPU:
 
     ## Private Methods (denoted by leading double underscores) ##
 
-    def __READ(self):
-        ...
+    def __READ(self, address):
+        while True:
+            user_input = input()
+            if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
+                self.memory[int(address)] = user_input
+                break
+            print("Invalid input.")
 
-    def __WRITE(self):
-        ...
+    def __WRITE(self, address):
+        print(self.memory[int(address)])
 
-    def __LOAD(self):
-        ...
-    
-    def __STORE(self):
-        ...
+    def __LOAD(self, address):
+        self.__accumulator = self.memory[int(address)]
+
+    def __STORE(self, address):
+        self.memory[int(address)] = self.__accumulator
 
     def __ADD(self):
         ...
