@@ -1,7 +1,6 @@
 class CPU:
 
     ###  ------ CPU Initialization ------ ###
-    ### I edited this
 
     def __init__(self, filename: str):
 
@@ -14,7 +13,7 @@ class CPU:
             raise ValueError("File '" + filename + "' does not exist or filepath is invalid")
 
         # Other variables
-        self.__accumulator = '0000'
+        self.__accumulator = '+0000'
         self.__input = ''
         self.__output = ''
         self.memory = {}        # Main memory dictionary
@@ -46,6 +45,7 @@ class CPU:
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
 
+            # print(f'fullCommandString {fullCommandString}, command {command}, value {value}, pointer {pointer}, accumulator, {self.__accumulator}')
             # print("fullCommandString:", fullCommandString)
             # print("commandSign:", commandSign)
             # print("command:", command)
@@ -84,16 +84,27 @@ class CPU:
                 # print("multiplying")
 
             elif command == '40':
-                self.__BRANCH()
-                # print("branching")
+                pointer = self.__BRANCH(value) - 1
+
+                # Debug prints
+                # print(f'Value to branch to {value}')
+                # print(f'Branched to {pointer}')
 
             elif command == '41':
-                self.__BRANCHNEG()
-                # print("brang-neg-ing")
+                # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+
+                branch_val = self.__BRANCHNEG(value)
+                if type(branch_val) == int:
+                    pointer = branch_val - 1
+                    # print(f'Branched to {branch_val}')
 
             elif command == '42':
-                self.__BRANCHZERO()
-                # print("branch-zero-ing")
+                # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+
+                branch_val = self.__BRANCHZERO(value)
+                if type(branch_val) == int:
+                    pointer = branch_val - 1
+                    # print(f'Branched to {branch_val}')
 
             elif command == '43':
                 halted = True
@@ -138,16 +149,23 @@ class CPU:
     def __MULTIPLY(self):
         ...
 
-    def __BRANCH(self):
-        ...
+    def __BRANCH(self, value):
+        return int(value)
 
-    def __BRANCHNEG(self):
-        ...
+    def __BRANCHNEG(self, value):
+        if self.__accumulator[0] == '-':
+            return int(value)
+        else:
+            return False
     
-    def __BRANCHZERO(self):
-        ...
+    def __BRANCHZERO(self, value):
+        if '0000' in self.__accumulator:
+            return int(value)
+        else:
+            return False
 
     def __HALT(self):
+        '''Nothing needed here right now, covered before calling this function'''
         ...
 
         
@@ -155,4 +173,3 @@ class CPU:
     
 myCPU = CPU('testfile.txt')
 myCPU.run()
-
