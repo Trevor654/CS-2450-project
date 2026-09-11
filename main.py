@@ -122,7 +122,7 @@ class CPU:
 
     def __READ(self, address):
         while True:
-            user_input = input()
+            user_input = input("Enter a value (format +/-0000): ")
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
                 self.memory[int(address)] = user_input
                 break
