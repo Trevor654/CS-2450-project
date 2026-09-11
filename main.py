@@ -139,7 +139,7 @@ class CPU:
 
 #adds value in memory to the accumulator & then stores it
 
-    def __ADD(self):
+    def __ADD(self, address):
         mem_value = int(self.memory[int(address)])
         acc_value = int(self.__accumulator)
         result = acc_value + mem_value
@@ -151,7 +151,7 @@ class CPU:
 
 #subtracts value in memory from the accumulator & then stores it
     
-    def __SUBTRACT(self):
+    def __SUBTRACT(self, address):
         mem_value = int(self.memory[int(address)])
         acc_value = int(self.__accumulator)
         result = acc_value - mem_value
@@ -163,7 +163,7 @@ class CPU:
 
 #divides value in memory from the accumulator & then stores it
 
-    def __DIVIDE(self):
+    def __DIVIDE(self, address):
         mem_value = int(self.memory[int(address)])
         if mem_value == 0:
             raise ValueError("Division by zero")
@@ -177,7 +177,7 @@ class CPU:
 
 #multiplies value in memory from the accumulator & then stores it
 
-    def __MULTIPLY(self):
+    def __MULTIPLY(self, address):
         mem_value = int(self.memory[int(address)])
         acc_value = int(self.__accumulator)
         result = acc_value * mem_value
