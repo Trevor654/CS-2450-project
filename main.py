@@ -171,5 +171,18 @@ class CPU:
         
 
     
-myCPU = CPU('testfile.txt')
-myCPU.run()
+
+
+
+if __name__ == '__main__':
+    # myCPU = CPU('testfile.txt')
+    # myCPU.run()
+    while True:
+        try:
+            file = input('Please type the name of the file you want to run\n')
+            if file.lower() == 'break':
+                break
+            myCPU = CPU(file)
+            break
+        except:
+            print('Please write the name of a valid file; ex: "Testfile.txt" (without the quotes) or type "break" to stop\n')
