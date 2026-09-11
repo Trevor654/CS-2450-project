@@ -138,6 +138,7 @@ class CPU:
         self.memory[int(address)] = self.__accumulator
 
 #adds value in memory to the accumulator & then stores it
+#oh and mem_value is memory value and acc_value is the accumulator value :) 
 
     def __ADD(self, address):
         mem_value = int(self.memory[int(address)])
