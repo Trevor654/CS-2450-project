@@ -68,19 +68,19 @@ class CPU:
                 # print("storing")
 
             elif command == '30':
-                self.__ADD()
+                self.__ADD(value)
                 # print("adding")
 
             elif command == '31':
-                self.__SUBTRACT()
+                self.__SUBTRACT(value)
                 # print("subtracting")
 
             elif command == '32':
-                self.__DIVIDE()
+                self.__DIVIDE(value)
                 # print("dividing")
 
             elif command == '33':
-                self.__MULTIPLY()
+                self.__MULTIPLY(value)
                 # print("multiplying")
 
             elif command == '40':
