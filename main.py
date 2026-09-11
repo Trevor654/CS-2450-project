@@ -222,6 +222,7 @@ if __name__ == '__main__':
             if file.lower() == 'break':
                 break
             myCPU = CPU(file)
+            myCPU.run()  # added run call
             break
         except:
             print('Please write the name of a valid file; ex: "Testfile.txt" (without the quotes) or type "break" to stop\n')
