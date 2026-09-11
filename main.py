@@ -137,17 +137,55 @@ class CPU:
     def __STORE(self, address):
         self.memory[int(address)] = self.__accumulator
 
+#adds value in memory to the accumulator & then stores it
+
     def __ADD(self):
-        ...
+        mem_value = int(self.memory[int(address)])
+        acc_value = int(self.__accumulator)
+        result = acc_value + mem_value
+
+        if result >= 0:
+            self.__accumulator = '+' + str(result).zfill(4)
+        else:
+            self.__accumulator = '-' + str(abs(result)).zfill(4)
+
+#subtracts value in memory from the accumulator & then stores it
     
     def __SUBTRACT(self):
-        ...
+        mem_value = int(self.memory[int(address)])
+        acc_value = int(self.__accumulator)
+        result = acc_value - mem_value
+
+        if result >= 0:
+            self.__accumulator = '+' + str(result).zfill(4)
+        else:
+            self.__accumulator = '-' + str(abs(result)).zfill(4)
+
+#divides value in memory from the accumulator & then stores it
 
     def __DIVIDE(self):
-        ...
+        mem_value = int(self.memory[int(address)])
+        if mem_value == 0:
+            raise ValueError("Division by zero")
+        acc_value = int(self.__accumulator)
+        result = int(acc_value / mem_value)
+
+        if result >= 0:
+            self.__accumulator = '+' + str(result).zfill(4)
+        else:
+            self.__accumulator = '-' + str(abs(result)).zfill(4)
+
+#multiplies value in memory from the accumulator & then stores it
 
     def __MULTIPLY(self):
-        ...
+        mem_value = int(self.memory[int(address)])
+        acc_value = int(self.__accumulator)
+        result = acc_value * mem_value
+        
+        if result >= 0:
+            self.__accumulator = '+' + str(result).zfill(4)
+        else:
+            self.__accumulator = '-' + str(abs(result)).zfill(4)
 
     def __BRANCH(self, value):
         return int(value)
