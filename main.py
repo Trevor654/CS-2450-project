@@ -25,7 +25,7 @@ class CPU:
         for i in range(len(commands)):
             # First make sure that each command is valid. If there are any invalid commands, raise an error
             command = commands[i][1:3]
-            if (len(commands[i]) != 5 or (command not in validCommands)):
+            if (len(commands[i]) != 5 or (command not in validCommands) or (commands[i][0] not in ['+','-'])):
                 raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
 
             # Command Valid, continue
