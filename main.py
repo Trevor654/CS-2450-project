@@ -204,8 +204,7 @@ class CPU:
             return False
 
     def __HALT(self):
-        '''Nothing needed here right now, covered before calling this function'''
-        ...
+        print('Halted')
 
         
 
