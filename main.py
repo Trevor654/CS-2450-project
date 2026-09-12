@@ -214,7 +214,7 @@ class CPU:
 
 
 if __name__ == '__main__':
-    # myCPU = CPU('testfile.txt')
+    # myCPU = CPU('Testing_files/testfile.txt')
     # myCPU.run()
     while True:
         try:
@@ -225,4 +225,4 @@ if __name__ == '__main__':
             myCPU.run()  # added run call
             break
         except:
-            print('Please write the name of a valid file; ex: "Testfile.txt" (without the quotes) or type "break" to stop\n')
+            print('Please type the file path to your file (ex. Testing_files/testfile.txt) or type "break" to stop\n')
