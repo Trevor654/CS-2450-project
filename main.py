@@ -218,11 +218,11 @@ if __name__ == '__main__':
     # myCPU.run()
     while True:
         try:
-            file = input('Please type the name of the file you want to run\n')
+            file = input('Please type the file path to the file you want to run (ex. Testing_files/testfile.txt)\n')
             if file.lower() == 'break':
                 break
             myCPU = CPU(file)
             myCPU.run()  # added run call
             break
         except:
-            print('Please write the name of a valid file; ex: "Testfile.txt" (without the quotes) or type "break" to stop\n')
+            print('Please type a valid file path or type "break" to stop\n')
