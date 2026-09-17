@@ -4,7 +4,7 @@ from main import CPU
 
 testing_CPU = CPU('Testing_files/branchtestfile.txt')
 # testing_CPU.run()
-print(testing_CPU._CPU__accumulator)
+# print(testing_CPU._CPU__accumulator)
 
 def test_branch():
     pass
