@@ -18,7 +18,7 @@ class CPU:
         self.__output = ''
         self.memory = {}        # Main memory dictionary
         for i in range(100):
-            self.memory[i] = '0000'
+            self.memory[i] = '+0000'
 
         # Loading in the commands from the file into the dictionary
         validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
