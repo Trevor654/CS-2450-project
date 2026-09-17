@@ -107,8 +107,7 @@ class CPU:
                     # print(f'Branched to {branch_val}')
 
             elif command == '43':
-                halted = True
-                self.__HALT()
+                halted = self.__HALT(command)
                 # print("halting")
 
             else:
@@ -203,8 +202,12 @@ class CPU:
         else:
             return False
 
-    def __HALT(self):
-        print('Halted')
+    def __HALT(self, command):
+        if command == '43':
+            print('Halted')
+            return True
+        else:
+            return False
 
         
 
