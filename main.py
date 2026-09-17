@@ -188,27 +188,38 @@ class CPU:
             self.__accumulator = '-' + str(abs(result)).zfill(4)
 
     def __BRANCH(self, value):
+        '''branches to a specified point in memory'''
         return int(value)
 
+#branches to a specified point in memory
+
     def __BRANCHNEG(self, value):
+        '''branches to a specified point in memory, but only if the accumulator is negative'''
         if self.__accumulator[0] == '-':
             return int(value)
         else:
             return False
-    
+
+#branches to a specified point in memory, but only if the accumulator is negative
+
     def __BRANCHZERO(self, value):
+        '''branches to a specified point in memory, but only if the accumulator is positive'''
         if '0000' in self.__accumulator:
             return int(value)
         else:
             return False
+        
+#branches to a specified point in memory, but only if the accumulator is positive
 
     def __HALT(self, command):
+        '''halts the program if the command given to it is the string 43'''
         if command == '43':
             print('Halted')
             return True
         else:
             return False
 
+#halts the program if the command given to it is '43'
         
 
     
