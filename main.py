@@ -22,14 +22,28 @@ class CPU:
 
         # Loading in the commands from the file into the dictionary
         validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
+        halted = False
         for i in range(len(commands)):
-            # First make sure that each command is valid. If there are any invalid commands, raise an error
-            command = commands[i][1:3]
-            if (len(commands[i]) != 5 or (command not in validCommands) or (commands[i][0] not in ['+','-'])):
+            #See if the current line is a number. If not, raise a ValueError
+            try:
+                float(commands[i])
+            except:
                 raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
-
-            # Command Valid, continue
-            self.memory[i] = commands[i]
+            
+            command = commands[i][1:3]
+            # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
+            if halted:
+                if (len(commands[i]) != 5 or (commands[i][0] not in ['+','-'])):
+                    raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
+                self.memory[i] = commands[i]
+            else:
+                # First make sure that each command is valid. If there are any invalid commands, raise an error
+                if (len(commands[i]) != 5 or (command not in validCommands) or (commands[i][0] not in ['+','-'])):
+                    raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
+                # Command Valid, continue
+                self.memory[i] = commands[i]
+                if command == '43':
+                    halted = True
             
 
     ###  ------ CPU Methods ------ ###
