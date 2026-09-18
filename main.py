@@ -200,13 +200,14 @@ class CPU:
 
     def __BRANCH(self, value):
         '''branches to a specified point in memory'''
-        if type(value) == int:
+        try:
+            value = int(value)
             if 0 <= value < 100:
                 return int(value)
             else:
                 print('Pick a value less than 100, but more than -1')
                 return False
-        else:
+        except:
             print('Only can branch to an integer')
             return False
 
