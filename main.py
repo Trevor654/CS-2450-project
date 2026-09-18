@@ -100,9 +100,6 @@ class CPU:
 
                 case '40':
                     pointer = self.__BRANCH(value) - 1
-
-                # Debug prints
-                # print(f'Value to branch to {value}')
                 # print(f'Branched to {pointer}')
 
                 case '41':
@@ -166,9 +163,6 @@ class CPU:
 
             # elif command == '40':
             #     pointer = self.__BRANCH(value) - 1
-
-            #     # Debug prints
-            #     # print(f'Value to branch to {value}')
             #     # print(f'Branched to {pointer}')
 
             # elif command == '41':
@@ -270,14 +264,22 @@ class CPU:
 
     def __BRANCH(self, value):
         '''branches to a specified point in memory'''
-        return int(value)
+        if type(value) == int:
+            if 0 <= value < 100:
+                return int(value)
+            else:
+                print('Pick a value less than 100, but more than -1')
+                return False
+        else:
+            print('Only can branch to an integer')
+            return False
 
 #branches to a specified point in memory
 
     def __BRANCHNEG(self, value):
         '''branches to a specified point in memory, but only if the accumulator is negative'''
         if self.__accumulator[0] == '-':
-            return int(value)
+            return self.__BRANCH(value)
         else:
             return False
 
@@ -286,13 +288,13 @@ class CPU:
     def __BRANCHZERO(self, value):
         '''branches to a specified point in memory, but only if the accumulator is positive'''
         if '0000' in self.__accumulator:
-            return int(value)
+            return self.__BRANCH(value)
         else:
             return False
         
 #branches to a specified point in memory, but only if the accumulator is positive
 
-    def __HALT(self, command):
+    def __HALT(self, command='43'):
         '''halts the program if the command given to it is the string 43'''
         if command == '43':
             print('Halted')
