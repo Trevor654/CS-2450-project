@@ -64,70 +64,137 @@ class CPU:
             # print("commandSign:", commandSign)
             # print("command:", command)
             # print("value:", value)
-
-            if command == '10':
-                self.__READ(value)
+            
+            match command:
+                case '10':
+                    self.__READ(value)
                 # print("reading")
 
-            elif command == '11':
-                self.__WRITE(value)
+                case '11':
+                    self.__WRITE(value)
                 # print("writing")
 
-            elif command == '20':
-                self.__LOAD(value)
+                case '20':
+                    self.__LOAD(value)
                 # print("loading")
 
-            elif command == '21':
-                self.__STORE(value)
+                case '21':
+                    self.__STORE(value)
                 # print("storing")
 
-            elif command == '30':
-                self.__ADD(value)
+                case '30':
+                    self.__ADD(value)
                 # print("adding")
 
-            elif command == '31':
-                self.__SUBTRACT(value)
+                case '31':
+                    self.__SUBTRACT(value)
                 # print("subtracting")
 
-            elif command == '32':
-                self.__DIVIDE(value)
+                case '32':
+                    self.__DIVIDE(value)
                 # print("dividing")
 
-            elif command == '33':
-                self.__MULTIPLY(value)
+                case '33':
+                    self.__MULTIPLY(value)
                 # print("multiplying")
 
-            elif command == '40':
-                pointer = self.__BRANCH(value) - 1
+                case '40':
+                    pointer = self.__BRANCH(value) - 1
 
                 # Debug prints
                 # print(f'Value to branch to {value}')
                 # print(f'Branched to {pointer}')
 
-            elif command == '41':
+                case '41':
                 # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
 
-                branch_val = self.__BRANCHNEG(value)
-                if type(branch_val) == int:
-                    pointer = branch_val - 1
-                    # print(f'Branched to {branch_val}')
+                    branch_val = self.__BRANCHNEG(value)
+                    if type(branch_val) == int:
+                        pointer = branch_val - 1
+                        # print(f'Branched to {branch_val}')
 
-            elif command == '42':
-                # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+                case '42':
+                    # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
 
-                branch_val = self.__BRANCHZERO(value)
-                if type(branch_val) == int:
-                    pointer = branch_val - 1
-                    # print(f'Branched to {branch_val}')
+                    branch_val = self.__BRANCHZERO(value)
+                    if type(branch_val) == int:
+                        pointer = branch_val - 1
+                        # print(f'Branched to {branch_val}')
 
-            elif command == '43':
-                halted = self.__HALT(command)
+                case '43':
+                    halted = self.__HALT(command)
                 # print("halting")
 
-            else:
-                raise ValueError("Command '" + fullCommandString + "' is not a valid command")
+                case _:
+                    raise ValueError("Command '" + fullCommandString + "' is not a valid command")
 
             pointer += 1
+
+
+
+            # if command == '10':
+            #     self.__READ(value)
+            #     # print("reading")
+
+            # elif command == '11':
+            #     self.__WRITE(value)
+            #     # print("writing")
+
+            # elif command == '20':
+            #     self.__LOAD(value)
+            #     # print("loading")
+
+            # elif command == '21':
+            #     self.__STORE(value)
+            #     # print("storing")
+
+            # elif command == '30':
+            #     self.__ADD(value)
+            #     # print("adding")
+
+            # elif command == '31':
+            #     self.__SUBTRACT(value)
+            #     # print("subtracting")
+
+            # elif command == '32':
+            #     self.__DIVIDE(value)
+            #     # print("dividing")
+
+            # elif command == '33':
+            #     self.__MULTIPLY(value)
+            #     # print("multiplying")
+
+            # elif command == '40':
+            #     pointer = self.__BRANCH(value) - 1
+
+            #     # Debug prints
+            #     # print(f'Value to branch to {value}')
+            #     # print(f'Branched to {pointer}')
+
+            # elif command == '41':
+            #     # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+
+            #     branch_val = self.__BRANCHNEG(value)
+            #     if type(branch_val) == int:
+            #         pointer = branch_val - 1
+            #         # print(f'Branched to {branch_val}')
+
+            # elif command == '42':
+            #     # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+
+            #     branch_val = self.__BRANCHZERO(value)
+            #     if type(branch_val) == int:
+            #         pointer = branch_val - 1
+            #         # print(f'Branched to {branch_val}')
+
+            # elif command == '43':
+            #     halted = self.__HALT(command)
+            #     # print("halting")
+
+            # else:
+            #     raise ValueError("Command '" + fullCommandString + "' is not a valid command")
+
+            # pointer += 1
 
 
 
@@ -249,6 +316,7 @@ if __name__ == '__main__':
             if file.lower() == 'break':
                 break
             myCPU = CPU(file)
+            print('\n--------------------Functions complete--------------------\n')
             myCPU.run()  # added run call
             break
         except:
