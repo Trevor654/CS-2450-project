@@ -1,11 +1,6 @@
 import pytest
 from main import CPU
 
-
-testing_CPU = CPU('Testing_files/branchtestfile.txt')
-# testing_CPU.run()
-# print(testing_CPU._CPU__accumulator)
-
 def test_init_bad_argument():
     # Testing if the argument given is an invalid testfile
     with pytest.raises(ValueError, match=r"File 'Testing_files/randomstring.txt' does not exist or filepath is invalid"): 
@@ -38,16 +33,31 @@ def test_init_success():
     assert CPU1.memory.get(8) == '+0000'
     assert CPU1.memory.get(9) == '+0000'
 
+
+testing_CPU = CPU('Testing_files/branchtestfile.txt')
+
 def test_branch():
-    pass
+    assert testing_CPU._CPU__BRANCH('hi') == False
+    assert testing_CPU._CPU__BRANCH(50) == 50
+    assert testing_CPU._CPU__BRANCH(150) == False
+    assert testing_CPU._CPU__BRANCH(-150) == False
 
 def test_branchneg():
-    pass
+    testing_CPU._CPU__accumulator = '-0001'
+    assert testing_CPU._CPU__BRANCHNEG(50) == 50
+    assert testing_CPU._CPU__BRANCHNEG(-50) == False
+    testing_CPU._CPU__accumulator = '+0001'
+    assert testing_CPU._CPU__BRANCHNEG(50) == False
 
 def test_branchzero():
-    pass
+    testing_CPU._CPU__accumulator = '+0000'
+    assert testing_CPU._CPU__BRANCHZERO(50) == 50
+    assert testing_CPU._CPU__BRANCHZERO(-70) == False
+    testing_CPU._CPU__accumulator = '+0001'
+    assert testing_CPU._CPU__BRANCHZERO(50) == False
 
 def test_halt():
     assert testing_CPU._CPU__HALT('43') == True
     assert testing_CPU._CPU__HALT('44') == False
+    assert testing_CPU._CPU__HALT() == True
 
