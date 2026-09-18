@@ -318,8 +318,8 @@ if __name__ == '__main__':
             if file.lower() == 'break':
                 break
             myCPU = CPU(file)
-            print('\n--------------------Functions complete--------------------\n')
             myCPU.run()  # added run call
+            print('\n--------------------Functions complete--------------------\n')
             break
         except:
             print('Please type a valid file path or type "break" to stop\n')
