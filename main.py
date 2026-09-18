@@ -68,42 +68,42 @@ class CPU:
             match command:
                 case '10':
                     self.__READ(value)
-                # print("reading")
+                    # print("reading")
 
                 case '11':
                     self.__WRITE(value)
-                # print("writing")
+                    # print("writing")
 
                 case '20':
                     self.__LOAD(value)
-                # print("loading")
+                    # print("loading")
 
                 case '21':
                     self.__STORE(value)
-                # print("storing")
+                    # print("storing")
 
                 case '30':
                     self.__ADD(value)
-                # print("adding")
+                    # print("adding")
 
                 case '31':
                     self.__SUBTRACT(value)
-                # print("subtracting")
+                    # print("subtracting")
 
                 case '32':
                     self.__DIVIDE(value)
-                # print("dividing")
+                    # print("dividing")
 
                 case '33':
                     self.__MULTIPLY(value)
-                # print("multiplying")
+                    # print("multiplying")
 
                 case '40':
                     pointer = self.__BRANCH(value) - 1
-                # print(f'Branched to {pointer}')
+                    # print(f'Branched to {pointer}')
 
                 case '41':
-                # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+                    # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
 
                     branch_val = self.__BRANCHNEG(value)
                     if type(branch_val) == int:
@@ -120,7 +120,7 @@ class CPU:
 
                 case '43':
                     halted = self.__HALT(command)
-                # print("halting")
+                    # print("halting")
 
                 case _:
                     raise ValueError("Command '" + fullCommandString + "' is not a valid command")
