@@ -61,3 +61,26 @@ def test_halt():
     assert testing_CPU._CPU__HALT('44') == False
     assert testing_CPU._CPU__HALT() == True
 
+def test_add():
+    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU.memory[20] = '-0028'
+    testing_CPU._CPU__ADD(20)
+    assert testing_CPU._CPU__accumulator == '+0028'
+
+def test_subtract():
+    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU.memory[21] = '-0030'
+    testing_CPU._CPU__SUBTRACT(21)
+    assert testing_CPU._CPU__accumulator == '+0086'
+
+def test_multiply():
+    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU.memory[56] = '+0003'
+    testing_CPU._CPU__MULTIPLY(56)
+    assert testing_CPU._CPU__accumulator == '+0168'
+
+def test_divide():
+    testing_CPU._CPU__accumulator = '+0028'
+    testing_CPU.memory[87] = '+0007'
+    testing_CPU._CPU__DIVIDE(87)
+    assert testing_CPU._CPU__accumulator == '+0004'
