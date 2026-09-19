@@ -38,20 +38,20 @@ testing_CPU = CPU('Testing_files/branchtestfile.txt')
 
 def test_branch():
     assert testing_CPU._CPU__BRANCH('hi') == False
-    assert testing_CPU._CPU__BRANCH(50) == 50
+    assert testing_CPU._CPU__BRANCH('50') == 50
     assert testing_CPU._CPU__BRANCH(150) == False
     assert testing_CPU._CPU__BRANCH(-150) == False
 
 def test_branchneg():
     testing_CPU._CPU__accumulator = '-0001'
-    assert testing_CPU._CPU__BRANCHNEG(50) == 50
+    assert testing_CPU._CPU__BRANCHNEG('60') == 60
     assert testing_CPU._CPU__BRANCHNEG(-50) == False
     testing_CPU._CPU__accumulator = '+0001'
     assert testing_CPU._CPU__BRANCHNEG(50) == False
 
 def test_branchzero():
     testing_CPU._CPU__accumulator = '+0000'
-    assert testing_CPU._CPU__BRANCHZERO(50) == 50
+    assert testing_CPU._CPU__BRANCHZERO('75') == 75
     assert testing_CPU._CPU__BRANCHZERO(-70) == False
     testing_CPU._CPU__accumulator = '+0001'
     assert testing_CPU._CPU__BRANCHZERO(50) == False
