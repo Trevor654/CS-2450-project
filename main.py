@@ -155,10 +155,12 @@ class CPU:
         acc_value = int(self.__accumulator)
         result = acc_value + mem_value
 
+        truncated_result = abs(result) % 10000
+
         if result >= 0:
-            self.__accumulator = '+' + str(result).zfill(4)
+            self.__accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(abs(result)).zfill(4)
+            self.__accumulator = '-' + str(truncated_result).zfill(4)
 
 #subtracts value in memory from the accumulator & then stores it
     
@@ -167,10 +169,12 @@ class CPU:
         acc_value = int(self.__accumulator)
         result = acc_value - mem_value
 
+        truncated_result = abs(result) % 10000
+
         if result >= 0:
-            self.__accumulator = '+' + str(result).zfill(4)
+            self.__accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(abs(result)).zfill(4)
+            self.__accumulator = '-' + str(truncated_result).zfill(4)
 
 #divides value in memory from the accumulator & then stores it
 
