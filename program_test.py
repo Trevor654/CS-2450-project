@@ -84,3 +84,13 @@ def test_divide():
     testing_CPU.memory[87] = '+0007'
     testing_CPU._CPU__DIVIDE(87)
     assert testing_CPU._CPU__accumulator == '+0004'
+
+def test_add_positive_overflow():
+    cpu = CPU("Testing_files/testfile.txt")
+
+    cpu._CPU__accumulator = "+9999"
+    cpu.memory[10] = "+2346"
+
+    cpu._CPU__ADD(10)
+
+    assert cpu.accumulator == "+2345"
