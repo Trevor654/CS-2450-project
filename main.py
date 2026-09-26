@@ -99,7 +99,7 @@ class CPU:
                     # print("multiplying")
 
                 case '40':
-                    pointer = self.__BRANCH(value) - 1
+                    pointer = self.__BRANCH(value) - 1  #subtract one here, because one will be added at the end of loop by default
                     # print(f'Branched to {pointer}')
 
                 case '41':
@@ -107,7 +107,7 @@ class CPU:
 
                     branch_val = self.__BRANCHNEG(value)
                     if type(branch_val) == int:
-                        pointer = branch_val - 1
+                        pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
                         # print(f'Branched to {branch_val}')
 
                 case '42':
@@ -115,7 +115,7 @@ class CPU:
 
                     branch_val = self.__BRANCHZERO(value)
                     if type(branch_val) == int:
-                        pointer = branch_val - 1
+                        pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
                         # print(f'Branched to {branch_val}')
 
                 case '43':
