@@ -93,4 +93,14 @@ def test_add_positive_overflow():
 
     cpu._CPU__ADD(10)
 
-    assert cpu.accumulator == "+2345"
+    assert cpu._CPU__accumulator == "+2345"
+
+def test_subtract_negative_overflow():
+    cpu = CPU("Testing_files/testfile.txt")
+
+    cpu._CPU__accumulator = "-9999"
+    cpu.memory[10] = "+2346"
+
+    cpu._CPU__SUBTRACT(10)
+
+    assert cpu._CPU__accumulator == "-2345"
