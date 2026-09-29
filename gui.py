@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import filedialog
 
 root = Tk()
 root.title("GUI test")
@@ -10,6 +11,7 @@ def hide_home():
     
     #The following 2 lines hide the old home screen
     welcome_label.pack_forget()
+    file_upload_button.pack_forget()
     my_button.pack_forget()
 
     # after hiding the old home screen it loads the new screen
@@ -31,8 +33,10 @@ def show_home():
     input_field.grid_forget()
     input_field_text.grid_forget()
 
+
     
     welcome_label.pack(pady=20)
+    file_upload_button.pack(pady=20)
     my_button.pack(pady=20)
     
     # my_button2.pack(pady=20)
@@ -40,14 +44,22 @@ def show_home():
 def run():
     pass
 
+def file_select():
+    root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
+    print(root.filename)
+
 #Create a label
 welcome_label = Label(root, text="Welcome to da program", font=("Helvetica", 36))
 welcome_label.pack(pady=20)
 
-#Pack, Grid, Place
+#Pack, Grid, Placel
 # my_label.grid()
 my_button = Button(root, text="Next page", command=hide_home)
 my_button.pack(pady=20)
+
+file_upload_button = Button(root, text='Open File', command=file_select)
+file_upload_button.pack(pady=20)
+# file_upload_button.pack(pady=20)
 
 #page 2 labels
 output_box = Label(root, text="Output will be put here", bg="yellow", bd=20, height=10, width=63, padx=5, pady=5)
