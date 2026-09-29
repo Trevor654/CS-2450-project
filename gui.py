@@ -8,21 +8,24 @@ class Gui:
         #General GUI setup
         self.root = Tk()
         self.root.title("GUI test")
-        self.root.geometry('530x400')
+        self.root.geometry('510x400')
         # root.iconbitmap("folder/image.ico")
 
         #Welcome label & homepage
-        self.welcome_label = Label(self.root, text="Welcome to da program", font=("Helvetica", 36))
+        self.welcome_label = Label(self.root, text="Welcome to da program", font=("Helvetica", 34))
         self.welcome_label.pack(pady=20)
 
-        self.file_upload_button = Button(self.root, text='Open File', command=self.file_select)
+        self.file_upload_button = Button(self.root, text='Open File', command=self.file_select, width=32, height=7, bd=6)
         self.file_upload_button.pack(pady=20)
 
         self.next_button = Button(self.root, text="Next page", command=self.hide_home)
         self.next_button.pack(pady=20)
 
+        #page 1 error text
+        self.error_text = Label(self.root, text="error", fg="red")
+
         #page 2 labels
-        self.output_box = Label(self.root, text="Output will be put here", bg="yellow", bd=20, height=10, width=63, padx=5, pady=5)
+        self.output_box = Label(self.root, text="Output will be put here", bg="yellow", bd=5, height=10, width=60, padx=20, pady=10)
         self.run_button = Button(self.root, text="Run", command=self.run, height=3, width=15)
         self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
@@ -73,9 +76,12 @@ class Gui:
     def run(self):
         pass
 
-    def print_ouput(self):
-        pass
-        # my_label.config(text="new text")
+    def print_ouput(self,output_text):
+        self.output_box.config(text=output_text)
+    
+    def print_error(self, error_msg):
+        self.error_text.config(text=error_msg)
+        self.error_text.pack()
 
 if __name__ == '__main__':
     Gui()
