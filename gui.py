@@ -1,77 +1,81 @@
 from tkinter import *
 from tkinter import filedialog
 
-root = Tk()
-root.title("GUI test")
-# root.iconbitmap("folder/image.ico")
-root.geometry('600x400')
 
-def hide_home():
-    # my_label.config(text="new text")
-    
-    #The following 2 lines hide the old home screen
-    welcome_label.pack_forget()
-    file_upload_button.pack_forget()
-    my_button.pack_forget()
+class Gui:
+    def __init__(self):
 
-    # after hiding the old home screen it loads the new screen
-    load_page_2()
+        #General GUI setup
+        self.root = Tk()
+        self.root.title("GUI test")
+        self.root.geometry('530x400')
+        # root.iconbitmap("folder/image.ico")
+
+        #Welcome label & homepage
+        self.welcome_label = Label(self.root, text="Welcome to da program", font=("Helvetica", 36))
+        self.welcome_label.pack(pady=20)
+
+        self.file_upload_button = Button(self.root, text='Open File', command=self.file_select)
+        self.file_upload_button.pack(pady=20)
+
+        self.next_button = Button(self.root, text="Next page", command=self.hide_home)
+        self.next_button.pack(pady=20)
+
+        #page 2 labels
+        self.output_box = Label(self.root, text="Output will be put here", bg="yellow", bd=20, height=10, width=63, padx=5, pady=5)
+        self.run_button = Button(self.root, text="Run", command=self.run, height=3, width=15)
+        self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
+        self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
+        self.input_field = Entry(self.root, width=30, font=('Arial', 14))
+
+        #Formating to center page 2 stuff
+        self.root.columnconfigure(0, weight=1)
+        self.root.columnconfigure(1, weight=1)
+        self.root.columnconfigure(2, weight=1)
+
+        #Allows the thing to close
+        self.root.mainloop()
 
 
-def load_page_2():
-    output_box.grid(row=0,column=0,columnspan=2)
-    run_button.grid(row=1,column=0)
-    back_button.grid(row=2,column=0)
-    input_field_text.grid(row=1,column=1)
-    input_field.grid(row=2,column=1,ipady=10)
+    def hide_home(self):
 
-def show_home():
-    # Should figure out how to restore it to exactly how it was without manually adding everything the same way
-    output_box.grid_forget()
-    run_button.grid_forget()
-    back_button.grid_forget()
-    input_field.grid_forget()
-    input_field_text.grid_forget()
+        #Hides the home screen
+        self.welcome_label.pack_forget()
+        self.file_upload_button.pack_forget()
+        self.next_button.pack_forget()
 
+        #Unhides page 2
+        self.output_box.grid(row=0,column=0,columnspan=2)
+        self.run_button.grid(row=1,column=0)
+        self.back_button.grid(row=2,column=0)
+        self.input_field_text.grid(row=1,column=1)
+        self.input_field.grid(row=2,column=1,ipady=10)
 
-    
-    welcome_label.pack(pady=20)
-    file_upload_button.pack(pady=20)
-    my_button.pack(pady=20)
-    
-    # my_button2.pack(pady=20)
+    def show_home(self):
 
-def run():
-    pass
+        #Hide all the page 2 items
+        self.output_box.grid_forget()
+        self.run_button.grid_forget()
+        self.back_button.grid_forget()
+        self.input_field.grid_forget()
+        self.input_field_text.grid_forget()
 
-def file_select():
-    root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
-    print(root.filename)
+        #Unhide the page 1 items
+        self.welcome_label.pack(pady=20)
+        self.file_upload_button.pack(pady=20)
+        self.next_button.pack(pady=20)
+        
+    def file_select(self):
+        self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
+        print(self.root.filename)
+        return self.root.filename
 
-#Create a label
-welcome_label = Label(root, text="Welcome to da program", font=("Helvetica", 36))
-welcome_label.pack(pady=20)
+    def run(self):
+        pass
 
-#Pack, Grid, Placel
-# my_label.grid()
-my_button = Button(root, text="Next page", command=hide_home)
-my_button.pack(pady=20)
+    def print_ouput(self):
+        pass
+        # my_label.config(text="new text")
 
-file_upload_button = Button(root, text='Open File', command=file_select)
-file_upload_button.pack(pady=20)
-# file_upload_button.pack(pady=20)
-
-#page 2 labels
-output_box = Label(root, text="Output will be put here", bg="yellow", bd=20, height=10, width=63, padx=5, pady=5)
-run_button = Button(root, text="Run", command=run, height=3, width=15)
-back_button = Button(root, text="Go back", command=show_home, height=3, width=15)
-input_field_text = Label(root, text="When needed, please input text in the box under this text")
-input_field = Entry(root, width=30, font=('Arial', 14))
-# my_button2.pack(pady=20)
-
-root.columnconfigure(0, weight=1)
-root.columnconfigure(1, weight=1)
-root.columnconfigure(2, weight=1)
-root.columnconfigure(3, weight=1)
-
-root.mainloop()
+if __name__ == '__main__':
+    Gui()
