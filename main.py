@@ -1,3 +1,7 @@
+
+from gui import Gui
+
+
 class CPU:
 
     ###  ------ CPU Initialization ------ ###
@@ -247,10 +251,7 @@ class CPU:
         else:
             return False
 
-#halts the program if the command given to it is '43'
-        
 
-    
 
 
 
@@ -258,6 +259,7 @@ if __name__ == '__main__':
     # myCPU = CPU('Testing_files/testfile.txt')
     # myCPU.run()
     while True:
+        Gui(CPU)
         try:
             file = input('Please type the file path to the file you want to run (ex. Testing_files/testfile.txt)\n')
             if file.lower() == 'break':

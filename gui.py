@@ -3,13 +3,17 @@ from tkinter import filedialog
 
 
 class Gui:
-    def __init__(self):
+    def __init__(self, cpu_class=None):
 
         #General GUI setup
         self.root = Tk()
         self.root.title("GUI test")
         self.root.geometry('510x400')
         # root.iconbitmap("folder/image.ico")
+
+        #variables to help with cpu
+        self.cpu_class = cpu_class
+        self.created_cpu = None
 
         #Welcome label & homepage
         self.welcome_label = Label(self.root, text="Welcome to da program", font=("Helvetica", 34))
@@ -30,6 +34,8 @@ class Gui:
         self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
         self.input_field = Entry(self.root, width=30, font=('Arial', 14))
+        # self.enter_value = Button(self, )
+        # my_variable = self.input_field.get()
 
         #Formating to center page 2 stuff
         self.root.columnconfigure(0, weight=1)
@@ -71,10 +77,15 @@ class Gui:
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
         print(self.root.filename)
-        return self.root.filename
+        try:
+            self.created_cpu = self.cpu_class(self.root.filename)
+            self.hide_home()
+        except:
+            print('No file selected')
 
     def run(self):
-        pass
+        if self.cpu_class != None:
+            self.created_cpu.run()
 
     def print_ouput(self,output_text):
         self.output_box.config(text=output_text)
