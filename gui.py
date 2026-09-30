@@ -29,13 +29,12 @@ class Gui:
         self.error_text = Label(self.root, text="error", fg="red")
 
         #page 2 labels
-        self.output_box = Label(self.root, text="Output will be put here", bg="yellow", bd=5, height=10, width=60, padx=20, pady=10)
+        self.output_box = Label(self.root, text="Output will be put here", bg="yellow", bd=5, height=10, width=63, padx=20, pady=10)
         self.run_button = Button(self.root, text="Run", command=self.run, height=3, width=15)
         self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
-        self.input_field = Entry(self.root, width=30, font=('Arial', 14))
-        # self.enter_value = Button(self, )
-        # my_variable = self.input_field.get()
+        self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled")
+        self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled")
 
         #Formating to center page 2 stuff
         self.root.columnconfigure(0, weight=1)
@@ -54,11 +53,12 @@ class Gui:
         self.next_button.pack_forget()
 
         #Unhides page 2
-        self.output_box.grid(row=0,column=0,columnspan=2)
+        self.output_box.grid(row=0,column=0,columnspan=3)
         self.run_button.grid(row=1,column=0)
         self.back_button.grid(row=2,column=0)
-        self.input_field_text.grid(row=1,column=1)
+        self.input_field_text.grid(row=1,column=1,columnspan=2)
         self.input_field.grid(row=2,column=1,ipady=10)
+        self.enter_value.grid(row=2,column=2)
 
     def show_home(self):
 
@@ -68,6 +68,7 @@ class Gui:
         self.back_button.grid_forget()
         self.input_field.grid_forget()
         self.input_field_text.grid_forget()
+        self.enter_value.grid_forget()
 
         #Unhide the page 1 items
         self.welcome_label.pack(pady=20)
@@ -82,6 +83,10 @@ class Gui:
             self.hide_home()
         except:
             print('No file selected')
+
+    def get_input(self):
+        my_variable = self.input_field.get()
+        print(my_variable)
 
     def run(self):
         if self.cpu_class != None:
