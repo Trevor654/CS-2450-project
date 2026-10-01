@@ -3,11 +3,11 @@ from main import CPU
 
 def test_init_bad_argument():
     # Testing if the argument given is an invalid testfile
-    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/randomstring.txt' does not exist or filepath is invalid"): 
+    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/randomstring.txt' does not exist or the filepath is invalid"): 
         CPU1 = CPU('Testing_files/randomstring.txt')
-    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/samantha.txt' does not exist or filepath is invalid"): 
+    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/samantha.txt' does not exist or the filepath is invalid"): 
         CPU2 = CPU('Testing_files/samantha.txt')
-    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/idk' does not exist or filepath is invalid"): 
+    with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/idk' does not exist or the filepath is invalid"): 
         CPU3 = CPU('Testing_files/idk')
 
 def test_init_invalid_string_in_file():
