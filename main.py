@@ -1,6 +1,4 @@
-
 from gui import Gui
-
 
 class CPU:
 
@@ -17,9 +15,12 @@ class CPU:
             raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
 
         # Other variables
-        self.__accumulator = '+0000'
-        self.__input = ''
-        self.__output = ''
+        self._accumulator = '+0000'
+        self._input = ''
+        self._output = ''
+        self._communicationUnit = CommunicationUnit(self)
+        self._arithmeticUnit = ArithmeticUnit(self)
+        self._controlUnit = ControlUnit(self)
         self.memory = {}        # Main memory dictionary
         for i in range(100):
             self.memory[i] = '+0000'
@@ -63,7 +64,7 @@ class CPU:
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
 
-            # print(f'fullCommandString {fullCommandString}, command {command}, value {value}, pointer {pointer}, accumulator, {self.__accumulator}')
+            # print(f'fullCommandString {fullCommandString}, command {command}, value {value}, pointer {pointer}, accumulator, {self._accumulator}')
             # print("fullCommandString:", fullCommandString)
             # print("commandSign:", commandSign)
             # print("command:", command)
@@ -71,59 +72,59 @@ class CPU:
             
             match command:
                 case '10':
-                    self.__READ(value)
+                    self._communicationUnit.READ(value)
                     # print("reading")
 
                 case '11':
-                    self.__WRITE(value)
+                    self._communicationUnit.WRITE(value)
                     # print("writing")
-
+                    
                 case '20':
-                    self.__LOAD(value)
+                    self._controlUnit.LOAD(value)
                     # print("loading")
 
                 case '21':
-                    self.__STORE(value)
+                    self._controlUnit.STORE(value)
                     # print("storing")
 
                 case '30':
-                    self.__ADD(value)
+                    self._arithmeticUnit.ADD(value)
                     # print("adding")
 
                 case '31':
-                    self.__SUBTRACT(value)
+                    self._arithmeticUnit.SUBTRACT(value)
                     # print("subtracting")
 
                 case '32':
-                    self.__DIVIDE(value)
+                    self._arithmeticUnit.DIVIDE(value)
                     # print("dividing")
 
                 case '33':
-                    self.__MULTIPLY(value)
+                    self._arithmeticUnit.MULTIPLY(value)
                     # print("multiplying")
 
                 case '40':
-                    pointer = self.__BRANCH(value) - 1  #subtract one here, because one will be added at the end of loop by default
+                    pointer = self._controlUnit.BRANCH(value) - 1  #subtract one here, because one will be added at the end of loop by default
                     # print(f'Branched to {pointer}')
 
                 case '41':
-                    # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+                    # print(f'Value to branch to {value}, accumulator is {self._accumulator}')
 
-                    branch_val = self.__BRANCHNEG(value)
+                    branch_val = self._controlUnit.BRANCHNEG(value)
                     if type(branch_val) == int:
                         pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
                         # print(f'Branched to {branch_val}')
 
                 case '42':
-                    # print(f'Value to branch to {value}, accumulator is {self.__accumulator}')
+                    # print(f'Value to branch to {value}, accumulator is {self._accumulator}')
 
-                    branch_val = self.__BRANCHZERO(value)
+                    branch_val = self._controlUnit.BRANCHZERO(value)
                     if type(branch_val) == int:
                         pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
                         # print(f'Branched to {branch_val}')
 
                 case '43':
-                    halted = self.__HALT(command)
+                    halted = self._controlUnit.HALT(command)
                     # print("halting")
 
                 case _:
@@ -131,86 +132,100 @@ class CPU:
 
             pointer += 1
 
+###---------------------- SUBCLASSES ----------------------###
 
-    ## Private Methods (denoted by leading double underscores) ##
+class CommunicationUnit:
 
-    def __READ(self, address):
+    def __init__(self, cpu):
+        self.cpu = cpu
+        
+    def READ(self, address):
         while True:
             user_input = input("Enter a value (format +/-0000): ")
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
-                self.memory[int(address)] = user_input
+                self.cpu.memory[int(address)] = user_input
                 break
             print("Invalid input.")
+    
+    def WRITE(self, address):
+        print(self.cpu.memory[int(address)])
 
-    def __WRITE(self, address):
-        print(self.memory[int(address)])
 
-    def __LOAD(self, address):
-        self.__accumulator = self.memory[int(address)]
+class ArithmeticUnit:
 
-    def __STORE(self, address):
-        self.memory[int(address)] = self.__accumulator
+    def __init__(self, cpu):
+        self.cpu = cpu
 
-#adds value in memory to the accumulator & then stores it
-#oh and mem_value is memory value and acc_value is the accumulator value :) 
-
-    def __ADD(self, address):
-        mem_value = int(self.memory[int(address)])
-        acc_value = int(self.__accumulator)
+    #adds value in memory to the accumulator & then stores it
+    #oh and mem_value is memory value and acc_value is the accumulator value :) 
+    def ADD(self, address):
+        mem_value = int(self.cpu.memory[int(address)])
+        acc_value = int(self.cpu._accumulator)
         result = acc_value + mem_value
 
         truncated_result = abs(result) % 10000
 
         if result >= 0:
-            self.__accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(truncated_result).zfill(4)
-
-#subtracts value in memory from the accumulator & then stores it
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
     
-    def __SUBTRACT(self, address):
-        mem_value = int(self.memory[int(address)])
-        acc_value = int(self.__accumulator)
+    #subtracts value in memory from the accumulator & then stores it
+        
+    def SUBTRACT(self, address):
+        mem_value = int(self.cpu.memory[int(address)])
+        acc_value = int(self.cpu._accumulator)
         result = acc_value - mem_value
 
         truncated_result = abs(result) % 10000
 
         if result >= 0:
-            self.__accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
 
-#divides value in memory from the accumulator & then stores it
+    #divides value in memory from the accumulator & then stores it
 
-    def __DIVIDE(self, address):
-        mem_value = int(self.memory[int(address)])
+    def DIVIDE(self, address):
+        mem_value = int(self.cpu.memory[int(address)])
         if mem_value == 0:
             raise ValueError("Division by zero")
-        acc_value = int(self.__accumulator)
+        acc_value = int(self.cpu._accumulator)
         result = int(acc_value / mem_value)
 
         truncated_result = abs(result) % 10000
 
         if result >= 0:
-            self.__accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
 
-#multiplies value in memory from the accumulator & then stores it
+    #multiplies value in memory from the accumulator & then stores it
 
-    def __MULTIPLY(self, address):
-        mem_value = int(self.memory[int(address)])
-        acc_value = int(self.__accumulator)
+    def MULTIPLY(self, address):
+        mem_value = int(self.cpu.memory[int(address)])
+        acc_value = int(self.cpu._accumulator)
         result = acc_value * mem_value
         
         truncated_result = abs(result) % 10000
 
         if result >= 0:
-            self.__accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
         else:
-            self.__accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
 
-    def __BRANCH(self, value):
+class ControlUnit:
+
+    def __init__(self, cpu):
+        self.cpu = cpu
+    
+    def LOAD(self, address):
+        self.cpu._accumulator = self.cpu.memory[int(address)]
+        
+    def STORE(self, address):
+        self.cpu.memory[int(address)] = self.cpu._accumulator
+
+    def BRANCH(self, value):
         '''branches to a specified point in memory'''
         try:
             value = int(value)
@@ -223,36 +238,33 @@ class CPU:
             print('Only can branch to an integer')
             return False
 
-#branches to a specified point in memory
+    #branches to a specified point in memory
 
-    def __BRANCHNEG(self, value):
+    def BRANCHNEG(self, value):
         '''branches to a specified point in memory, but only if the accumulator is negative'''
-        if self.__accumulator[0] == '-':
-            return self.__BRANCH(value)
+        if self.cpu._accumulator[0] == '-':
+            return self.BRANCH(value)
         else:
             return False
 
-#branches to a specified point in memory, but only if the accumulator is negative
+    #branches to a specified point in memory, but only if the accumulator is negative
 
-    def __BRANCHZERO(self, value):
+    def BRANCHZERO(self, value):
         '''branches to a specified point in memory, but only if the accumulator is positive'''
-        if '0000' in self.__accumulator:
-            return self.__BRANCH(value)
+        if '0000' in self.cpu._accumulator:
+            return self.BRANCH(value)
         else:
             return False
         
-#branches to a specified point in memory, but only if the accumulator is positive
+    #branches to a specified point in memory, but only if the accumulator is positive
 
-    def __HALT(self, command='43'):
+    def HALT(self, command='43'):
         '''halts the program if the command given to it is the string 43'''
         if command == '43':
             print('Halted')
             return True
         else:
             return False
-
-
-
 
 
 if __name__ == '__main__':
