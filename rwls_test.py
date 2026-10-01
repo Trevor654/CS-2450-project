@@ -7,7 +7,7 @@ def testREADValidInput(monkeypatch):
     
     cpu = CPU("Testing_files/testfile.txt")
     monkeypatch.setattr('builtins.input', lambda _: inputCase1)
-    cpu._CPU__READ(test_address)
+    cpu._communicationUnit.READ(test_address)
     
     assert cpu.memory[int(test_address)] == inputCase1
 
@@ -21,7 +21,7 @@ def testREADInvalidInput(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__READ(test_address)
+    cpu._communicationUnit.READ(test_address)
     
     assert cpu.memory[int(test_address)] == inputCaseValid
 
@@ -30,7 +30,7 @@ def testWRITEValidMemory():
     expected_value = '+1007'  # Pre-loaded in Testing_files/testfile.txt memory[0]
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__WRITE(test_address)
+    cpu._communicationUnit.WRITE(test_address)
     
     # Asserting memory remains intact without using capsys
     assert cpu.memory[int(test_address)] == expected_value
@@ -40,32 +40,32 @@ def testWRITEInvalidAddress():
     
     cpu = CPU("Testing_files/testfile.txt")
     with pytest.raises(KeyError):
-        cpu._CPU__WRITE(invalid_address)
+        cpu._communicationUnit.WRITE(invalid_address)
 
 def testLOADValidPositive():
     test_address = '02'
     expected_value = '+2007'  # Pre-loaded in Testing_files/testfile.txt memory[2]
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__LOAD(test_address)
+    cpu._controlUnit.LOAD(test_address)
     
-    assert cpu._CPU__accumulator == expected_value
+    assert cpu._accumulator == expected_value
 
 def testLOADValidNegative():
     test_address = '04'
     expected_value = '-2109'  # Pre-loaded in Testing_files/testfile.txt memory[4]
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__LOAD(test_address)
+    cpu._controlUnit.LOAD(test_address)
     
-    assert cpu._CPU__accumulator == expected_value
+    assert cpu._accumulator == expected_value
 
 def testLOADInvalidAddress():
     invalid_address = 'xyz'
     
     cpu = CPU("Testing_files/testfile.txt")
     with pytest.raises(ValueError):
-        cpu._CPU__LOAD(invalid_address)
+        cpu._controlUnit.LOAD(invalid_address)
 
 def testSTOREValidPositive():
     source_address = '00'
@@ -73,8 +73,8 @@ def testSTOREValidPositive():
     store_address = '20'
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__LOAD(source_address)
-    cpu._CPU__STORE(store_address)
+    cpu._controlUnit.LOAD(source_address)
+    cpu._controlUnit.STORE(store_address)
     
     assert cpu.memory[int(store_address)] == expected_value
 
@@ -84,8 +84,8 @@ def testSTOREValidNegative():
     store_address = '21'
     
     cpu = CPU("Testing_files/testfile.txt")
-    cpu._CPU__LOAD(source_address)
-    cpu._CPU__STORE(store_address)
+    cpu._controlUnit.LOAD(source_address)
+    cpu._controlUnit.STORE(store_address)
     
     assert cpu.memory[int(store_address)] == expected_value
 
@@ -94,4 +94,4 @@ def testSTOREInvalidAddress():
     
     cpu = CPU("Testing_files/testfile.txt")
     with pytest.raises(ValueError):
-        cpu._CPU__STORE(invalid_address)
+        cpu._controlUnit.STORE(invalid_address)
