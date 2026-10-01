@@ -14,7 +14,7 @@ class CPU:
             filecontent = file.read()
             commands = filecontent.split('\n')
         except:
-            raise ValueError("File '" + filename + "' does not exist or filepath is invalid")
+            raise FileNotFoundError("File '" + filename + "' does not exist or filepath is invalid")
 
         # Other variables
         self.__accumulator = '+0000'
@@ -268,5 +268,5 @@ if __name__ == '__main__':
             myCPU.run()  # added run call
             print('\n--------------------Functions complete--------------------\n')
             break
-        except:
-            print('Please type a valid file path or type "break" to stop\n')
+        except Exception as e:
+            print(e)
