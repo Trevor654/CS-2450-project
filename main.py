@@ -14,7 +14,7 @@ class CPU:
             filecontent = file.read()
             commands = filecontent.split('\n')
         except:
-            raise FileNotFoundError("File '" + filename + "' does not exist or filepath is invalid")
+            raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
 
         # Other variables
         self.__accumulator = '+0000'
