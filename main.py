@@ -54,10 +54,14 @@ class CPU:
     ###  ------ CPU Methods ------ ###
 
     ## Public Methods ##
-    def run(self):
+    def run(self, pointer=0, gui_input=''):
         # print("Running the machine...")
+        # print(pointer,input)
+
         halted = False
-        pointer = 0
+        need_input = False
+        print_val = None
+
         while not halted:
             fullCommandString = self.memory[pointer]      # This goes through the commands one by one
             commandSign = fullCommandString[0]            # This refers to if the command is positive or negative
@@ -72,7 +76,17 @@ class CPU:
             
             match command:
                 case '10':
-                    self._communicationUnit.READ(value)
+                    # print(gui_input)
+                    got_input = self._communicationUnit.READ(value,gui_input)
+                    if got_input == True:
+                        need_input = False
+                        pointer += 1
+                        return (halted, pointer, need_input, print_val)
+                    else:
+                        print_val = "Please Enter a value in this format: +/-0000: "
+                        need_input = True
+                        return (halted, pointer, need_input, print_val)
+
                     # print("reading")
 
                 case '11':
@@ -131,6 +145,7 @@ class CPU:
                     raise ValueError("Command '" + fullCommandString + "' is not a valid command")
 
             pointer += 1
+            return (halted, pointer, need_input, print_val)
 
 ###---------------------- SUBCLASSES ----------------------###
 
@@ -139,17 +154,22 @@ class CommunicationUnit:
     def __init__(self, cpu):
         self.cpu = cpu
         
-    def READ(self, address):
-        while True:
-            user_input = input("Enter a value (format +/-0000): ")
+    def READ(self, address, input_val='No Gui'):
+        if input_val == 'No Gui':
+            while True:
+                user_input = input("Enter a value (format +/-0000): ")
+                if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
+                    self.cpu.memory[int(address)] = user_input
+                    break
+                print("Invalid input.")
+        else:
+            user_input = input_val
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
-                self.cpu.memory[int(address)] = user_input
-                break
-            print("Invalid input.")
+                return True
+            return False
     
     def WRITE(self, address):
         print(self.cpu.memory[int(address)])
-
 
 class ArithmeticUnit:
 
@@ -268,17 +288,19 @@ class ControlUnit:
 
 
 if __name__ == '__main__':
+    Gui(CPU)
     # myCPU = CPU('Testing_files/testfile.txt')
     # myCPU.run()
-    while True:
-        Gui(CPU)
-        try:
-            file = input('Please type the file path to the file you want to run (ex. Testing_files/testfile.txt)\n')
-            if file.lower() == 'break':
-                break
-            myCPU = CPU(file)
-            myCPU.run()  # added run call
-            print('\n--------------------Functions complete--------------------\n')
-            break
-        except Exception as e:
-            print(e)
+    
+
+    # while True:    
+    #     try:
+    #         file = input('Please type the file path to the file you want to run (ex. Testing_files/testfile.txt)\n')
+    #         if file.lower() == 'break':
+    #             break
+    #         myCPU = CPU(file)
+    #         myCPU.run()  # added run call
+    #         print('\n--------------------Functions complete--------------------\n')
+    #         break
+    #     except Exception as e:
+    #         print(e)
