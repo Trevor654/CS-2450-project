@@ -83,10 +83,13 @@ class Gui:
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
         print(self.root.filename)
         try:
+            if self.root.filename == '':
+                raise FileNotFoundError("Please select a file")
             self.created_cpu = self.cpu_class(self.root.filename, self)
             self.hide_home()
-        except:
-            print('No file selected')
+        except Exception as e:
+            self.print_error(e)
+            print(e)
 
     def get_input(self):
         the_input = self.input_field.get()
