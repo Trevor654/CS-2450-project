@@ -4,7 +4,9 @@ class CPU:
 
     ###  ------ CPU Initialization ------ ###
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, gui=None):
+
+        self.gui = gui
 
         # If the filename doesn't exist, throw an error. If it does, edit the memory 
         try:
