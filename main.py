@@ -35,18 +35,18 @@ class CPU:
             try:
                 float(commands[i])
             except:
-                raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
+                raise ValueError("Invalid command '" + commands[i] + "' in the given file")
             
             command = commands[i][1:3]
             # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
             if halted:
                 if (len(commands[i]) != 5 or (commands[i][0] not in ['+','-'])):
-                    raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
+                    raise ValueError("Invalid command '" + commands[i] + "' in the given file")
                 self.memory[i] = commands[i]
             else:
                 # First make sure that each command is valid. If there are any invalid commands, raise an error
                 if (len(commands[i]) != 5 or (command not in validCommands) or (commands[i][0] not in ['+','-'])):
-                    raise ValueError("Invalid command '" + commands[i] + "' in file " + filename)
+                    raise ValueError("Invalid command '" + commands[i] + "' in the given file")
                 # Command Valid, continue
                 self.memory[i] = commands[i]
                 if command == '43':
