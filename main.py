@@ -126,7 +126,7 @@ class CPU:
                     # print("multiplying")
 
                 case '40':
-                    pointer = self._controlUnit.BRANCH(value) - 1  #subtract one here, because one will be added at the end of loop by default
+                    pointer = self._controlUnit.BRANCH(value)
                     # print(f'Branched to {pointer}')
 
                 case '41':
@@ -134,7 +134,7 @@ class CPU:
 
                     branch_val = self._controlUnit.BRANCHNEG(value)
                     if type(branch_val) == int:
-                        pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
+                        pointer = branch_val
                         # print(f'Branched to {branch_val}')
 
                 case '42':
@@ -142,7 +142,7 @@ class CPU:
 
                     branch_val = self._controlUnit.BRANCHZERO(value)
                     if type(branch_val) == int:
-                        pointer = branch_val - 1        #subtract one here, because one will be added at the end of loop by default
+                        pointer = branch_val
                         # print(f'Branched to {branch_val}')
 
                 case '43':
@@ -262,10 +262,10 @@ class ControlUnit:
         '''branches to a specified point in memory'''
         try:
             value = int(value)
-            if 0 <= value < 100:
-                return int(value)
+            if 1 <= value < 100:
+                return int(value) - 1        #subtract one here, because one will be added at the end of the run loop by default
             else:
-                self.cpu.output('Pick a value less than 100, but more than -1')
+                self.cpu.output('Pick a value less than 100, but more than -1 to branch to')
                 return False
         except:
             self.cpu.output('Only can branch to an integer')
