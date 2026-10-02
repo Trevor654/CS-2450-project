@@ -4,7 +4,9 @@ class CPU:
 
     ###  ------ CPU Initialization ------ ###
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, gui=None):
+
+        self.gui = gui
 
         # If the filename doesn't exist, throw an error. If it does, edit the memory 
         try:
@@ -54,7 +56,13 @@ class CPU:
     ###  ------ CPU Methods ------ ###
 
     ## Public Methods ##
-    def run(self, pointer=0, gui_input=''):
+    def output(self, message):
+        if self.gui is not None:
+            self.gui.print_output(message)
+        else:
+            print(message)
+
+    def run(self):
         # print("Running the machine...")
         # print(pointer,input)
 
@@ -167,9 +175,14 @@ class CommunicationUnit:
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
                 return True
             return False
+        
+            #     self.cpu.memory[int(address)] = user_input
+            #     break
+            # self.cpu.output("Invalid input.")
     
     def WRITE(self, address):
-        print(self.cpu.memory[int(address)])
+        value = self.cpu.memory[int(address)]
+        self.cpu.output(value)
 
 class ArithmeticUnit:
 
@@ -252,10 +265,10 @@ class ControlUnit:
             if 0 <= value < 100:
                 return int(value)
             else:
-                print('Pick a value less than 100, but more than -1')
+                self.cpu.output('Pick a value less than 100, but more than -1')
                 return False
         except:
-            print('Only can branch to an integer')
+            self.cpu.output('Only can branch to an integer')
             return False
 
     #branches to a specified point in memory
@@ -281,7 +294,7 @@ class ControlUnit:
     def HALT(self, command='43'):
         '''halts the program if the command given to it is the string 43'''
         if command == '43':
-            print('Halted')
+            self.cpu.output('Halted')
             return True
         else:
             return False

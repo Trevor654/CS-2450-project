@@ -85,7 +85,7 @@ class Gui:
         print(self.root.filename)
         self.created_cpu = self.cpu_class(self.root.filename)
         try:
-            self.created_cpu = self.cpu_class(self.root.filename)
+            self.created_cpu = self.cpu_class(self.root.filename, self)
             self.hide_home()
         except:
             print('No file selected')
@@ -130,13 +130,17 @@ class Gui:
 
                 # self.print_ouput(str(cpu_tuple))
                 # print(halted)
-
-
-    def print_ouput(self,output_text):
-        self.output_box.config(text=output_text)
-
+                
     def change_input_label(self,output_text):
         self.input_field_text.config(text=output_text)
+
+    def print_output(self, output_text):
+        current_output = self.output_box.cget("text")
+        if current_output == "Output will be put here":
+            current_output = ""
+        if current_output:
+            current_output += "\n"
+        self.output_box.config(text=current_output + str(output_text))
     
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
