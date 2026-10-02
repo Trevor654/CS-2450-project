@@ -73,7 +73,7 @@ Examples:
 
 `-1234`
 
-The input must contain exactly five characters: a `+` or `-` sign followed by four digits.
+The input must contain exactly five characters: a `+` or `-` sign followed by four digits. The input can also only contain four digits without a '+' or '-' if the number is implicitly a positive value.
 
 If the input does not match this format, the program displays `Invalid input.` and asks the user to enter another value.
 
