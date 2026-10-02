@@ -56,6 +56,12 @@ class CPU:
     ###  ------ CPU Methods ------ ###
 
     ## Public Methods ##
+    def output(self, message):
+        if self.gui is not None:
+            self.gui.print_output(message)
+        else:
+            print(message)
+
     def run(self):
         # print("Running the machine...")
         halted = False
