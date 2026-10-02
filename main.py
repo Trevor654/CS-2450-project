@@ -153,10 +153,11 @@ class CommunicationUnit:
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
                 self.cpu.memory[int(address)] = user_input
                 break
-            print("Invalid input.")
+            self.cpu.output("Invalid input.")
     
     def WRITE(self, address):
-        print(self.cpu.memory[int(address)])
+        value = self.cpu.memory[int(address)]
+        self.cpu.output(value)
 
 
 class ArithmeticUnit:
@@ -240,10 +241,10 @@ class ControlUnit:
             if 0 <= value < 100:
                 return int(value)
             else:
-                print('Pick a value less than 100, but more than -1')
+                self.cpu.output('Pick a value less than 100, but more than -1')
                 return False
         except:
-            print('Only can branch to an integer')
+            self.cpu.output('Only can branch to an integer')
             return False
 
     #branches to a specified point in memory
@@ -269,7 +270,7 @@ class ControlUnit:
     def HALT(self, command='43'):
         '''halts the program if the command given to it is the string 43'''
         if command == '43':
-            print('Halted')
+            self.cpu.output('Halted')
             return True
         else:
             return False
