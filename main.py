@@ -163,23 +163,35 @@ class CommunicationUnit:
         self.cpu = cpu
         
     def READ(self, address, input_val='No Gui'):
+
+        def checkValidInput5chars(input): #Returns true if the input is valid, returns false if invalid
+            if len(input) == 5 and input[0] in ['+', '-'] and input[1:].isdigit():
+                return True
+            return False
+        def checkValidInput4chars(input): #Returns true if the input is valid, returns false if invalid
+            if len(input) == 4 and input.isdigit():
+                return True
+            return False
+            
         if input_val == 'No Gui':
             while True:
                 user_input = input("Enter a value (format +/-0000): ")
-                if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
+                if checkValidInput5chars(user_input):
                     self.cpu.memory[int(address)] = user_input
+                    break
+                elif checkValidInput4chars(user_input):
+                    self.cpu.memory[int(address)] = ('+' + user_input)
                     break
                 print("Invalid input.")
         else:
             user_input = input_val
-            if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
+            if checkValidInput5chars(user_input):
                 self.cpu.memory[int(address)] = user_input
                 return True
+            elif checkValidInput4chars(user_input):
+                self.cpu.memory[int(address)] = ('+' + user_input)
+                return True
             return False
-        
-            #     self.cpu.memory[int(address)] = user_input
-            #     break
-            # self.cpu.output("Invalid input.")
     
     def WRITE(self, address):
         value = self.cpu.memory[int(address)]
