@@ -1,4 +1,5 @@
 from gui import Gui
+from functions import *
 
 class CPU:
 
@@ -40,12 +41,12 @@ class CPU:
             command = commands[i][1:3]
             # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
             if halted:
-                if (len(commands[i]) != 5 or (commands[i][0] not in ['+','-'])):
+                if (checkValidInput5chars(commands[i]) == False):
                     raise ValueError("Invalid command '" + commands[i] + "' in the given file")
                 self.memory[i] = commands[i]
             else:
                 # First make sure that each command is valid. If there are any invalid commands, raise an error
-                if (len(commands[i]) != 5 or (command not in validCommands) or (commands[i][0] not in ['+','-'])):
+                if ((checkValidInput5chars(commands[i]) == False) or (command not in validCommands)):
                     raise ValueError("Invalid command '" + commands[i] + "' in the given file")
                 # Command Valid, continue
                 self.memory[i] = commands[i]
@@ -163,15 +164,6 @@ class CommunicationUnit:
         self.cpu = cpu
         
     def READ(self, address, input_val='No Gui'):
-
-        def checkValidInput5chars(input): #Returns true if the input is valid, returns false if invalid
-            if len(input) == 5 and input[0] in ['+', '-'] and input[1:].isdigit():
-                return True
-            return False
-        def checkValidInput4chars(input): #Returns true if the input is valid, returns false if invalid
-            if len(input) == 4 and input.isdigit():
-                return True
-            return False
             
         if input_val == 'No Gui':
             while True:
