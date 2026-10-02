@@ -44,7 +44,7 @@ class Gui:
         #Allows the thing to close
         self.root.mainloop()
 
-
+    #display classes
     def hide_home(self):
 
         #Hides the home screen
@@ -77,7 +77,8 @@ class Gui:
         self.welcome_label.pack(pady=20)
         self.file_upload_button.pack(pady=20)
         self.next_button.pack(pady=20)
-        
+
+    #user input classes
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
         print(self.root.filename)
@@ -92,7 +93,7 @@ class Gui:
         the_input = self.input_field.get()
         self.gui_run(self.pointer,the_input)
 
-
+    #general gui class
     def gui_run(self, pointer_int=0, input_recieved=''):
 
         #sets the pointer if one is given (used when getting input from user)
@@ -131,6 +132,7 @@ class Gui:
                 self.enter_value.config(state='normal')
                 break
 
+    #output classes
     def change_input_label(self,output_text):
         self.input_field_text.config(text=output_text)
 
