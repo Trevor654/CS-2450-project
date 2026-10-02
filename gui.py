@@ -91,6 +91,7 @@ class Gui:
 
     def get_input(self):
         the_input = self.input_field.get()
+        print(the_input, '\n\n')
         self.gui_run(self.pointer,the_input)
 
     #general gui class
@@ -109,7 +110,7 @@ class Gui:
         self.enter_value.config(state='disabled')
 
         halted = False
-
+        
         while not halted:
             #Recieves a tuple from the cpu run function detailing
             # (halted (boolean), pointer (int), need_input (boolean), print_val (string))
@@ -117,8 +118,15 @@ class Gui:
             # Using that tuple it determines whether the file is done reading or not, where the pointer is
             # for the next line to read, whether it needs to wait for input from the user, and if it does need
             # input, what to ask the user for in the label above the entry box
-            cpu_tuple = self.created_cpu.run(self.pointer,input_recieved)
-            # print(cpu_tuple)
+            # print(f' input pre check {input_recieved}')
+            if input_recieved == '':
+                cpu_tuple = self.created_cpu.run(self.pointer)
+                # print(f'got no input')
+            else:
+                cpu_tuple = self.created_cpu.run(self.pointer,input_recieved)
+                # print(f'got {input_recieved}')
+                input_recieved = ''
+            print(cpu_tuple)
             halted = cpu_tuple[0]
             self.pointer = cpu_tuple[1]
             need_input = cpu_tuple[2]

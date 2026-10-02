@@ -75,6 +75,7 @@ class CPU:
             commandSign = fullCommandString[0]            # This refers to if the command is positive or negative
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
+            print(pointer,fullCommandString, gui_input)
 
             # print(f'fullCommandString {fullCommandString}, command {command}, value {value}, pointer {pointer}, accumulator, {self._accumulator}')
             # print("fullCommandString:", fullCommandString)
@@ -131,7 +132,6 @@ class CPU:
 
                 case '41':
                     # print(f'Value to branch to {value}, accumulator is {self._accumulator}')
-
                     branch_val = self._controlUnit.BRANCHNEG(value)
                     if type(branch_val) == int:
                         pointer = branch_val
