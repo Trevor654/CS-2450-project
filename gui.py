@@ -93,6 +93,10 @@ class Gui:
 
     def get_input(self):
         the_input = self.input_field.get()
+        self.input_field_text.config(fg="black")
+        if (checkValidInput5chars(the_input) == False) and (checkValidInput4chars(the_input) == False):
+            self.input_field_text.config(fg="red")
+            return
         print(the_input, '\n\n')
         self.gui_run(self.pointer,the_input)
 
