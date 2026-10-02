@@ -62,7 +62,7 @@ class CPU:
         else:
             print(message)
 
-    def run(self):
+    def run(self, pointer=0, gui_input=''):
         # print("Running the machine...")
         # print(pointer,input)
 
