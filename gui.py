@@ -82,7 +82,6 @@ class Gui:
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
         print(self.root.filename)
-        self.created_cpu = self.cpu_class(self.root.filename)
         try:
             self.created_cpu = self.cpu_class(self.root.filename, self)
             self.hide_home()
