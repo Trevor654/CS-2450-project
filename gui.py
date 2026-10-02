@@ -29,7 +29,7 @@ class Gui:
         self.error_text = Label(self.root, text="error", fg="red")
 
         #page 2 labels
-        self.output_box = Label(self.root, text="Output will be put here", bg="CadetBlue1", bd=5, height=10, width=63, padx=20, pady=10)
+        self.output_box = Text(self.root, bg="CadetBlue1", bd=5, height=10, width=60, padx=10, pady=10, state="disabled")
         self.run_button = Button(self.root, text="Run", command=self.gui_run, height=3, width=15)
         self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
@@ -144,12 +144,11 @@ class Gui:
         self.input_field_text.config(text=output_text)
 
     def print_output(self, output_text):
-        current_output = self.output_box.cget("text")
-        if current_output == "Output will be put here":
-            current_output = ""
-        if current_output:
-            current_output += "\n"
-        self.output_box.config(text=current_output + str(output_text))
+        self.output_box.config(state="normal")
+        self.output_box.insert("end", str(output_text) + "\n")
+        self.output_box.see("end")
+        self.output_box.config(state="disabled")
+        
     
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
