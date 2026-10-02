@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from functions import *
 
 class Gui:
     def __init__(self, cpu_class=None):
