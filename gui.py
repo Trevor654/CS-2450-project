@@ -52,6 +52,7 @@ class Gui:
         self.welcome_label.pack_forget()
         self.file_upload_button.pack_forget()
         self.next_button.pack_forget()
+        self.error_text.pack_forget()
 
         #Unhides page 2
         self.output_box.grid(row=0,column=0,columnspan=3)
