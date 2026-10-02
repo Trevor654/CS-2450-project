@@ -62,55 +62,55 @@ def test_halt():
     assert testing_CPU._controlUnit.HALT() == True
 
 def test_add():
-    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU._accumulator = '+0056'
     testing_CPU.memory[20] = '-0028'
-    testing_CPU._CPU__ADD(20)
-    assert testing_CPU._CPU__accumulator == '+0028'
+    testing_CPU._arithmeticUnit.ADD(20)
+    assert testing_CPU._accumulator == '+0028'
 
 def test_subtract():
-    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU._accumulator = '+0056'
     testing_CPU.memory[21] = '-0030'
-    testing_CPU._CPU__SUBTRACT(21)
-    assert testing_CPU._CPU__accumulator == '+0086'
+    testing_CPU._arithmeticUnit.SUBTRACT(21)
+    assert testing_CPU._accumulator == '+0086'
 
 def test_multiply():
-    testing_CPU._CPU__accumulator = '+0056'
+    testing_CPU._accumulator = '+0056'
     testing_CPU.memory[56] = '+0003'
-    testing_CPU._CPU__MULTIPLY(56)
-    assert testing_CPU._CPU__accumulator == '+0168'
+    testing_CPU._arithmeticUnit.MULTIPLY(56)
+    assert testing_CPU._accumulator == '+0168'
 
 def test_divide():
-    testing_CPU._CPU__accumulator = '+0028'
+    testing_CPU._accumulator = '+0028'
     testing_CPU.memory[87] = '+0007'
-    testing_CPU._CPU__DIVIDE(87)
-    assert testing_CPU._CPU__accumulator == '+0004'
+    testing_CPU._arithmeticUnit.DIVIDE(87)
+    assert testing_CPU._accumulator == '+0004'
 
 def test_add_positive_overflow():
     cpu = CPU("Testing_files/testfile.txt")
 
-    cpu._CPU__accumulator = "+9999"
+    cpu._accumulator = "+9999"
     cpu.memory[10] = "+2346"
 
-    cpu._CPU__ADD(10)
+    cpu._arithmeticUnit.ADD(10)
 
-    assert cpu._CPU__accumulator == "+2345"
+    assert cpu._accumulator == "+2345"
 
 def test_subtract_negative_overflow():
     cpu = CPU("Testing_files/testfile.txt")
 
-    cpu._CPU__accumulator = "-9999"
+    cpu._accumulator = "-9999"
     cpu.memory[10] = "+2346"
 
-    cpu._CPU__SUBTRACT(10)
+    cpu._arithmeticUnit.SUBTRACT(10)
 
-    assert cpu._CPU__accumulator == "-2345"
+    assert cpu._accumulator == "-2345"
 
 def test_multiply_positive_overflow():
     cpu = CPU("Testing_files/testfile.txt")
 
-    cpu._CPU__accumulator = "+5000"
+    cpu._accumulator = "+5000"
     cpu.memory[10] = "+3"
 
-    cpu._CPU__MULTIPLY(10)
+    cpu._arithmeticUnit.MULTIPLY(10)
 
-    assert cpu._CPU__accumulator == "+5000"
+    assert cpu._accumulator == "+5000"
