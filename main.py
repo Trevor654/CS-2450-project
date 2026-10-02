@@ -173,6 +173,7 @@ class CommunicationUnit:
         else:
             user_input = input_val
             if len(user_input) == 5 and user_input[0] in ['+', '-'] and user_input[1:].isdigit():
+                self.cpu.memory[int(address)] = user_input
                 return True
             return False
         
