@@ -92,8 +92,13 @@ class Gui:
         if self.cpu_class != None:
             self.created_cpu.run()
 
-    def print_ouput(self,output_text):
-        self.output_box.config(text=output_text)
+    def print_output(self, output_text):
+        current_output = self.output_box.cget("text")
+        if current_output == "Output will be put here":
+            current_output = ""
+        if current_output:
+            current_output += "\n"
+        self.output_box.config(text=current_output + str(output_text))
     
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
