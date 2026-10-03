@@ -32,22 +32,30 @@ class CPU:
         validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
         halted = False
         for i in range(len(commands)):
-            #See if the current line is a number. If not, raise a ValueError
-            try:
-                float(commands[i])
-            except:
-                raise ValueError("Invalid command '" + commands[i] + "' in the given file")
-            
             command = commands[i][1:3]
             # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
             if halted:
                 if (checkValidInput5chars(commands[i]) == False):
-                    raise ValueError("Invalid command '" + commands[i] + "' in the given file")
+                    errors = []
+                    for k in range(i,len(commands)):
+                        if checkValidInput5chars(commands[k]) == False:
+                            errors.append(commands[k])
+                    errorString = "Invalid command(s) in the given file: "
+                    errorStringList = ", ".join(errors)
+                    errorString += errorStringList
+                    raise ValueError(errorString)
                 self.memory[i] = commands[i]
             else:
                 # First make sure that each command is valid. If there are any invalid commands, raise an error
                 if ((checkValidInput5chars(commands[i]) == False) or (command not in validCommands)):
-                    raise ValueError("Invalid command '" + commands[i] + "' in the given file")
+                    errors = []
+                    for k in range(i,len(commands)):
+                        if checkValidInput5chars(commands[k]) == False:
+                            errors.append(commands[k])
+                    errorString = "Invalid command(s) in the given file: "
+                    errorStringList = ", ".join(errors)
+                    errorString += errorStringList
+                    raise ValueError(errorString)
                 # Command Valid, continue
                 self.memory[i] = commands[i]
                 if command == '43':
