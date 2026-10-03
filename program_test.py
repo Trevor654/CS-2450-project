@@ -11,9 +11,9 @@ def test_init_bad_argument():
         CPU3 = CPU('Testing_files/idk')
 
 def test_init_invalid_string_in_file():
-    with pytest.raises(ValueError, match=r"Invalid command '\+11aa' in the given file"): 
+    with pytest.raises(ValueError, match=r"Invalid command\(s\) in the given file: \+11aa"): 
         CPU1 = CPU('Testing_files/test_bad_string_1.txt')
-    with pytest.raises(ValueError, match=r"Invalid command '\+30082' in the given file"): 
+    with pytest.raises(ValueError, match=r"Invalid command\(s\) in the given file: \+30082"): 
         CPU1 = CPU('Testing_files/test_bad_string_2.txt')
 
 
