@@ -72,9 +72,6 @@ class CPU:
             print(message)
 
     def run(self, pointer=0, gui_input=''):
-        # print("Running the machine...")
-        # print(pointer,input)
-
         halted = False
         need_input = False
         print_val = None
@@ -85,16 +82,9 @@ class CPU:
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
             print(pointer,fullCommandString, gui_input)
-
-            # print(f'fullCommandString {fullCommandString}, command {command}, value {value}, pointer {pointer}, accumulator, {self._accumulator}')
-            # print("fullCommandString:", fullCommandString)
-            # print("commandSign:", commandSign)
-            # print("command:", command)
-            # print("value:", value)
             
             match command:
                 case '10':
-                    # print(gui_input)
                     got_input = self._communicationUnit.READ(value,gui_input)
                     if got_input == True:
                         need_input = False
@@ -105,58 +95,43 @@ class CPU:
                         need_input = True
                         return (halted, pointer, need_input, print_val)
 
-                    # print("reading")
-
                 case '11':
                     self._communicationUnit.WRITE(value)
-                    # print("writing")
                     
                 case '20':
                     self._controlUnit.LOAD(value)
-                    # print("loading")
 
                 case '21':
                     self._controlUnit.STORE(value)
-                    # print("storing")
 
                 case '30':
                     self._arithmeticUnit.ADD(value)
-                    # print("adding")
 
                 case '31':
                     self._arithmeticUnit.SUBTRACT(value)
-                    # print("subtracting")
 
                 case '32':
                     self._arithmeticUnit.DIVIDE(value)
-                    # print("dividing")
 
                 case '33':
                     self._arithmeticUnit.MULTIPLY(value)
-                    # print("multiplying")
 
                 case '40':
                     pointer = self._controlUnit.BRANCH(value)
-                    # print(f'Branched to {pointer}')
 
                 case '41':
-                    # print(f'Value to branch to {value}, accumulator is {self._accumulator}')
                     branch_val = self._controlUnit.BRANCHNEG(value)
                     if type(branch_val) == int:
                         pointer = branch_val
-                        # print(f'Branched to {branch_val}')
 
                 case '42':
-                    # print(f'Value to branch to {value}, accumulator is {self._accumulator}')
 
                     branch_val = self._controlUnit.BRANCHZERO(value)
                     if type(branch_val) == int:
                         pointer = branch_val
-                        # print(f'Branched to {branch_val}')
 
                 case '43':
                     halted = self._controlUnit.HALT(command)
-                    # print("halting")
 
                 case _:
                     raise ValueError("Command '" + fullCommandString + "' is not a valid command")
