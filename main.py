@@ -81,7 +81,7 @@ class CPU:
             commandSign = fullCommandString[0]            # This refers to if the command is positive or negative
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
-            print(pointer,fullCommandString, gui_input)
+            # print(pointer,fullCommandString, gui_input)
             
             match command:
                 case '10':

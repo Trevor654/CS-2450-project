@@ -7,8 +7,13 @@ class Gui:
 
         #General GUI setup
         self.root = Tk()
-        self.root.title("GUI test")
+        self.root.title("UV Simulator")
         self.root.geometry('510x400')
+        
+
+        self.primary_color = "#4C721D"
+        self.off_color = "#FFFFFF"
+        self.root.configure(bg=self.primary_color)
         # root.iconbitmap("folder/image.ico")
 
         #variables to help with cpu
@@ -16,26 +21,25 @@ class Gui:
         self.created_cpu = None
         self.pointer = 0
 
-        #Welcome label & homepage
-        self.welcome_label = Label(self.root, text="Welcome to da program", font=("Helvetica", 34))
-        self.welcome_label.pack(pady=20)
+        #setup
+        # self.primary_color_label = Label(self.root, text="Change Primary color")
+        self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=20)
+        # self.off_color_label = Label(self.root, text="Change Off color")
+        self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=20)
 
-        self.file_upload_button = Button(self.root, text='Open File', command=self.file_select, width=32, height=7, bd=6)
-        self.file_upload_button.pack(pady=20)
+        self.output_box = Label(self.root, bg=self.off_color, height=10, width=68, padx=10, pady=10)        #Parent for output_box_text and error_text
+        self.output_box_text = Text(self.output_box, bg=self.off_color, bd=0, height=10, width=68, state="disabled", font=("Arial", 10))
+        self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=60, font=("Arial", 10))
 
-        self.next_button = Button(self.root, text="Next page", command=self.hide_home)
-        self.next_button.pack(pady=20)
+        self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, command=self.file_select, height=2, width=15)
+        self.run_button = Button(self.root, text="Run", bg=self.off_color, command=self.gui_run, height=2, width=15)
+        self.reset_button = Button(self.root, text="Reset", bg=self.off_color, command=self.gui_reset, height=2, width=15, state='disabled')
 
-        #page 1 error text
-        self.error_text = Label(self.root, text="error", fg="red")
-
-        #page 2 labels
-        self.output_box = Text(self.root, bg="CadetBlue1", bd=5, height=10, width=60, padx=10, pady=10, state="disabled")
-        self.run_button = Button(self.root, text="Run", command=self.gui_run, height=3, width=15)
-        self.back_button = Button(self.root, text="Go back", command=self.show_home, height=3, width=15)
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text")
         self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled")
         self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled")
+
+        self.setup_gui_display()
 
         #Formating to center page 2 stuff
         self.root.columnconfigure(0, weight=1)
@@ -46,49 +50,37 @@ class Gui:
         self.root.mainloop()
 
     #display classes
-    def hide_home(self):
+    def setup_gui_display(self):
 
-        #Hides the home screen
-        self.welcome_label.pack_forget()
-        self.file_upload_button.pack_forget()
-        self.next_button.pack_forget()
-        self.error_text.pack_forget()
+        #Row 0 Color picker
+        # self.primary_color_label.grid(row=0,column=0)
+        self.primary_color_picker.grid(row=0,column=0)
+        # self.off_color_label.grid(row=0,column=2)
+        self.off_color_picker.grid(row=0,column=1)
 
-        #Unhides page 2
-        self.output_box.grid(row=0,column=0,columnspan=3)
-        self.run_button.grid(row=1,column=0)
-        self.back_button.grid(row=2,column=0)
-        self.input_field_text.grid(row=1,column=1,columnspan=2)
-        self.input_field.grid(row=2,column=1,ipady=10)
-        self.enter_value.grid(row=2,column=2)
+        #Row 1 (Output box and children)
+        self.output_box.grid(row=1,column=0,columnspan=3)
+        self.output_box_text.grid(row=0,column=0,columnspan=3)
+        self.error_text.grid(row=1,column=0,columnspan=3)
 
-    def show_home(self):
+        #Row 3
+        self.file_upload_button.grid(row=2,column=0)
+        self.run_button.grid(row=3,column=0)
+        self.reset_button.grid(row=4,column=0)
 
-        #Hide all the page 2 items
-        self.output_box.grid_forget()
-        self.run_button.grid_forget()
-        self.back_button.grid_forget()
-        self.input_field.grid_forget()
-        self.input_field_text.grid_forget()
-        self.enter_value.grid_forget()
-
-        #Enables run button for if a file has already been ran
-        self.run_button.config(state='normal')
-
-        #Unhide the page 1 items
-        self.welcome_label.pack(pady=20)
-        self.file_upload_button.pack(pady=20)
-        self.next_button.pack(pady=20)
+        self.input_field_text.grid(row=2,column=1,columnspan=2)
+        self.input_field.grid(row=3,column=1,ipady=10)
+        self.enter_value.grid(row=3,column=2)
 
     #user input classes
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
-        print(self.root.filename)
+        # print(self.root.filename)
         try:
             if self.root.filename == '':
                 raise FileNotFoundError("Please select a file")
             self.created_cpu = self.cpu_class(self.root.filename, self)
-            self.hide_home()
+            # self.hide_home()
         except Exception as e:
             self.print_error(e)
             print(e)
@@ -99,7 +91,7 @@ class Gui:
         if (checkValidInput5chars(the_input) == False) and (checkValidInput4chars(the_input) == False):
             self.input_field_text.config(fg="red")
             return
-        print(the_input, '\n\n')
+        # print(the_input, '\n\n')
         self.gui_run(self.pointer,the_input)
 
     #general gui class
@@ -126,6 +118,7 @@ class Gui:
             # Using that tuple it determines whether the file is done reading or not, where the pointer is
             # for the next line to read, whether it needs to wait for input from the user, and if it does need
             # input, what to ask the user for in the label above the entry box
+
             # print(f' input pre check {input_recieved}')
             if input_recieved == '':
                 cpu_tuple = self.created_cpu.run(self.pointer)
@@ -134,7 +127,7 @@ class Gui:
                 cpu_tuple = self.created_cpu.run(self.pointer,input_recieved)
                 # print(f'got {input_recieved}')
                 input_recieved = ''
-            print(cpu_tuple)
+            # print(cpu_tuple)
             halted = cpu_tuple[0]
             self.pointer = cpu_tuple[1]
             need_input = cpu_tuple[2]
@@ -148,20 +141,28 @@ class Gui:
                 self.enter_value.config(state='normal')
                 break
 
+            if halted == True:
+                self.reset_button.config(state='active')
+
+    #reset button
+    def gui_reset(self):
+        self.run_button.config(state="normal")
+        # self.output_box_text.delete("1.0", 'end')
+
     #output classes
     def change_input_label(self,output_text):
         self.input_field_text.config(text=output_text)
 
     def print_output(self, output_text):
-        self.output_box.config(state="normal")
-        self.output_box.insert("end", str(output_text) + "\n")
-        self.output_box.see("end")
-        self.output_box.config(state="disabled")
+        self.output_box_text.config(state="normal")
+        self.output_box_text.insert("end", str(output_text) + "\n")
+        self.output_box_text.see("end")
+        self.output_box_text.config(state="disabled")
         
     
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
-        self.error_text.pack()
+        # self.error_text.grid(row=5,column=0)
 
 if __name__ == '__main__':
     Gui()
