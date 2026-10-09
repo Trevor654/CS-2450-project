@@ -27,7 +27,7 @@ class Gui:
         self.output_box_margin = Label(self.root, bg=self.primary_color, pady=10, padx=10, width=100)
         self.output_box = Label(self.output_box_margin, bg=self.off_color, height=10, width=90, pady=10)        #Parent for output_box_text and error_text
         self.output_box_text = Text(self.output_box, bg=self.off_color, bd=0, height=10, width=90, state="disabled", font=("Arial", 10))
-        self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=70, font=("Arial", 10))
+        self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=55, font=("Arial", 10))
 
         #Left side buttons
         self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, command=self.file_select, height=2, width=15)
@@ -62,13 +62,14 @@ class Gui:
         self.root.mainloop()
     
     #display classes
+    
     def setup_gui_display(self):
 
         #Output box and children
         self.output_box_margin.grid(row=0,columnspan=4,pady=10,padx=10)     #provides a nice looking margin
         self.output_box.grid(row=0,column=0,columnspan=4)
         self.output_box_text.grid(row=0,column=0,columnspan=4)
-        self.error_text.grid(row=1,column=0,columnspan=4)
+        self.error_text.grid(row=1,column=0,columnspan=1)
 
         #Buttons on the left
         self.file_upload_button.grid(row=2,column=0)
@@ -178,7 +179,6 @@ class Gui:
             
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
-        # self.error_text.grid(row=5,column=0)
 
 if __name__ == '__main__':
     Gui()
