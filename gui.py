@@ -19,6 +19,7 @@ class Gui:
         #variables to help with cpu
         self.cpu_class = cpu_class
         self.created_cpu = None
+        self.file_path = None
         self.pointer = 0
 
         #setup
@@ -31,7 +32,7 @@ class Gui:
 
         #Left side buttons
         self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, command=self.file_select, height=2, width=15)
-        self.run_button = Button(self.root, text="Run", bg=self.off_color, command=self.gui_run, height=2, width=15, state='disabled')
+        self.run_button = Button(self.root, text="Run", bg=self.off_color, command=self.gui_run_setup, height=2, width=15, state='disabled')
         self.reset_button = Button(self.root, text="Reset", bg=self.off_color, command=self.gui_reset, height=2, width=15, state='disabled')
 
         #Input related buttons and fields
@@ -92,6 +93,7 @@ class Gui:
             if self.root.filename == '':
                 raise FileNotFoundError("Please select a file")
             self.created_cpu = self.cpu_class(self.root.filename, self)
+            self.file_path = self.root.filename
             self.run_button.config(state='normal')
         except Exception as e:
             self.print_error(e)
@@ -106,13 +108,18 @@ class Gui:
         self.gui_run(self.pointer,the_input)
 
     #general gui classes
+    def gui_run_setup(self):
+        #stops the run button from being pressed while a file is being read
+        self.run_button.config(state='disabled')   
+
+        #creates a new cpu each time the function runs
+        self.created_cpu = self.cpu_class(self.file_path, self)
+        self.gui_run()
+
     def gui_run(self, pointer_int=0, input_recieved=''):
 
         #sets the pointer if one is given (used when getting input from user)
-        self.pointer = pointer_int
-
-        #stops the run button from being pressed while a file is being read
-        self.run_button.config(state='disabled')    
+        self.pointer = pointer_int 
 
         #Sets fields to reset after recieving input
         self.change_input_label("When needed, please input text in the box under this text")
@@ -160,6 +167,7 @@ class Gui:
         self.output_box_text.config(state="normal")
         self.output_box_text.delete("1.0","end")
         self.output_box_text.config(state="disabled")
+        self.error_text.config(text=' ')
 
     def primary_color_change(self):
         pass
