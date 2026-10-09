@@ -9,12 +9,12 @@ class Gui:
         self.root = Tk()
         self.root.title("UV Simulator")
         self.root.geometry('520x350')
+        # root.iconbitmap("folder/image.ico")
         
-
+        #Set colors for things
         self.primary_color = "#4C721D"
         self.off_color = "#FFFFFF"
         self.root.configure(bg=self.primary_color)
-        # root.iconbitmap("folder/image.ico")
 
         #variables to help with cpu
         self.cpu_class = cpu_class
@@ -22,27 +22,34 @@ class Gui:
         self.pointer = 0
 
         #setup
+
+        #Ouput box and children
         self.output_box_margin = Label(self.root, bg=self.primary_color, pady=10, padx=10, width=100)
         self.output_box = Label(self.output_box_margin, bg=self.off_color, height=10, width=90, pady=10)        #Parent for output_box_text and error_text
         self.output_box_text = Text(self.output_box, bg=self.off_color, bd=0, height=10, width=90, state="disabled", font=("Arial", 10))
         self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=70, font=("Arial", 10))
 
+        #Left side buttons
         self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, command=self.file_select, height=2, width=15)
         self.run_button = Button(self.root, text="Run", bg=self.off_color, command=self.gui_run, height=2, width=15, state='disabled')
         self.reset_button = Button(self.root, text="Reset", bg=self.off_color, command=self.gui_reset, height=2, width=15, state='disabled')
 
+        #Input related buttons and fields
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text",width=60,padx=2, bg=self.off_color)
         self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled")
         self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled")
 
-        self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=17)
-        self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=15)
+        #Color picker buttons
+        self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=17, command=self.primary_color_change)
+        self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=15, command=self.off_color_change)
 
+        #Welcome to program text
         self.output_box_text.config(state="normal")
         self.output_box_text.insert("end", "Welcome to the program\n")
         self.output_box_text.see("end")
         self.output_box_text.config(state="disabled")
 
+        #Put the gui objects on the gui
         self.setup_gui_display()
 
         #Formating to center page 2 stuff
@@ -80,13 +87,11 @@ class Gui:
     #user input classes
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
-        # print(self.root.filename)
         try:
             if self.root.filename == '':
                 raise FileNotFoundError("Please select a file")
             self.created_cpu = self.cpu_class(self.root.filename, self)
             self.run_button.config(state='normal')
-            # self.hide_home()
         except Exception as e:
             self.print_error(e)
             print(e)
@@ -97,10 +102,9 @@ class Gui:
         if (checkValidInput5chars(the_input) == False) and (checkValidInput4chars(the_input) == False):
             self.input_field_text.config(fg="red")
             return
-        # print(the_input, '\n\n')
         self.gui_run(self.pointer,the_input)
 
-    #general gui class
+    #general gui classes
     def gui_run(self, pointer_int=0, input_recieved=''):
 
         #sets the pointer if one is given (used when getting input from user)
@@ -150,10 +154,17 @@ class Gui:
             if halted == True:
                 self.reset_button.config(state='active')
 
-    #reset button
     def gui_reset(self):
         self.run_button.config(state="normal")
-        # self.output_box_text.delete("1.0", 'end')
+        self.output_box_text.config(state="normal")
+        self.output_box_text.delete("1.0","end")
+        self.output_box_text.config(state="disabled")
+
+    def primary_color_change(self):
+        pass
+
+    def off_color_change(self):
+        pass
 
     #output classes
     def change_input_label(self,output_text):
@@ -164,8 +175,7 @@ class Gui:
         self.output_box_text.insert("end", str(output_text) + "\n")
         self.output_box_text.see("end")
         self.output_box_text.config(state="disabled")
-        
-    
+            
     def print_error(self, error_msg):
         self.error_text.config(text=error_msg)
         # self.error_text.grid(row=5,column=0)
