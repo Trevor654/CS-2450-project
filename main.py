@@ -5,63 +5,22 @@ class CPU:
 
     ###  ------ CPU Initialization ------ ###
 
-    def __init__(self, filename: str, gui=None):
+    def __init__(self, filename: str, gui: Gui = None):
+        self.gui = gui          # The GUI for the CPU
 
-        self.gui = gui
-
-        # If the filename doesn't exist, throw an error. If it does, edit the memory 
-        try:
-            file = open(filename, 'r')
-            filecontent = file.read()
-            commands = filecontent.split('\n')
-        except:
-            raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
-
-        # Other variables
-        self._accumulator = '+0000'
-        self._input = ''
-        self._output = ''
-        self._communicationUnit = CommunicationUnit(self)
-        self._arithmeticUnit = ArithmeticUnit(self)
-        self._controlUnit = ControlUnit(self)
         self.memory = {}        # Main memory dictionary
         for i in range(100):
             self.memory[i] = '+0000'
 
-        # Loading in the commands from the file into the dictionary
-        validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
-        halted = False
-        for i in range(len(commands)):
-            command = commands[i][1:3]
-            # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
-            if halted:
-                if (checkValidInput5chars(commands[i]) == False):
-                    errors = []
-                    for k in range(i,len(commands)):
-                        if checkValidInput5chars(commands[k]) == False:
-                            errors.append(commands[k])
-                    errorString = "Invalid command(s) in the given file: "
-                    errorStringList = ", ".join(errors)
-                    errorString += errorStringList
-                    raise ValueError(errorString)
-                self.memory[i] = commands[i]
-            else:
-                # First make sure that each command is valid. If there are any invalid commands, raise an error
-                if ((checkValidInput5chars(commands[i]) == False) or (command not in validCommands)):
-                    errors = []
-                    for k in range(i,len(commands)):
-                        if checkValidInput5chars(commands[k]) == False:
-                            errors.append(commands[k])
-                    errorString = "Invalid command(s) in the given file: "
-                    errorStringList = ", ".join(errors)
-                    errorString += errorStringList
-                    raise ValueError(errorString)
-                # Command Valid, continue
-                self.memory[i] = commands[i]
-                if command == '43':
-                    halted = True
-            
+        self._fileHandler = FileHandler(self)           ## File Handler Object that handles file checking.
+        self._fileHandler.loadDataFromFile(filename)    ## Throws errors depending if the file is not found or is malformed
 
+        # Other variables
+        self._accumulator = '+0000'
+        self._communicationUnit = CommunicationUnit(self)
+        self._arithmeticUnit = ArithmeticUnit(self)
+        self._controlUnit = ControlUnit(self)
+        
     ###  ------ CPU Methods ------ ###
 
     ## Public Methods ##
@@ -140,6 +99,52 @@ class CPU:
             return (halted, pointer, need_input, print_val)
 
 ###---------------------- SUBCLASSES ----------------------###
+
+class FileHandler:
+    def __init__(self, cpu):
+        self.cpu = cpu
+
+    def loadDataFromFile(self, filename):
+        # If the filename doesn't exist, throw an error. If it does, edit the memory 
+        try:
+            file = open(filename, 'r')
+            filecontent = file.read()
+            commands = filecontent.split('\n')
+        except:
+            raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
+        
+        # Loading in the commands from the file into the dictionary
+        validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
+        halted = False
+        for i in range(len(commands)):
+            command = commands[i][1:3]
+            # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
+            if halted:
+                if (checkValidInput5chars(commands[i]) == False):
+                    errors = []
+                    for k in range(i,len(commands)):
+                        if checkValidInput5chars(commands[k]) == False:
+                            errors.append(commands[k])
+                    errorString = "Invalid command(s) in the given file: "
+                    errorStringList = ", ".join(errors)
+                    errorString += errorStringList
+                    raise ValueError(errorString)
+                self.cpu.memory[i] = commands[i]
+            else:
+                # First make sure that each command is valid. If there are any invalid commands, raise an error
+                if ((checkValidInput5chars(commands[i]) == False) or (command not in validCommands)):
+                    errors = []
+                    for k in range(i,len(commands)):
+                        if checkValidInput5chars(commands[k]) == False:
+                            errors.append(commands[k])
+                    errorString = "Invalid command(s) in the given file: "
+                    errorStringList = ", ".join(errors)
+                    errorString += errorStringList
+                    raise ValueError(errorString)
+                # Command Valid, continue
+                self.cpu.memory[i] = commands[i]
+                if command == '43':
+                    halted = True
 
 class CommunicationUnit:
 
