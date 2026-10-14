@@ -44,6 +44,9 @@ class Gui:
         self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=17, command=self.primary_color_change)
         self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=15, command=self.off_color_change)
 
+        #Edit file button
+        self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=1, width=7, state='disabled')
+
         #Welcome to program text
         self.output_box_text.config(state="normal")
         self.output_box_text.insert("end", "Welcome to the program\n")
@@ -85,6 +88,9 @@ class Gui:
         #Color change buttons
         self.primary_color_picker.grid(row=4,column=1)
         self.off_color_picker.grid(row=4,column=2)
+
+        #Edit file button
+        self.edit_file_button.grid(row=4,column=3)
 
     #user input classes
     def file_select(self):
