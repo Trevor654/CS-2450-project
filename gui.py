@@ -45,7 +45,7 @@ class Gui:
         self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=15, command=self.off_color_change)
 
         #Edit file button
-        self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=1, width=7, state='disabled')
+        self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=1, width=7, state='disabled', command=self.open_editor)
 
         #Welcome to program text
         self.output_box_text.config(state="normal")
@@ -175,6 +175,21 @@ class Gui:
         self.output_box_text.delete("1.0","end")
         self.output_box_text.config(state="disabled")
         self.error_text.config(text=' ')
+
+    def open_editor(self):
+        #Second window for reading and editing the loaded file
+        self.editor_window = Toplevel(self.root)
+        self.editor_window.title("Edit File")
+        self.editor_window.configure(bg=self.primary_color)
+
+        self.editor_text = Text(self.editor_window, bg=self.off_color, height=20, width=30, font=("Arial", 10))
+        self.editor_text.grid(row=0, column=0, padx=10, pady=10)
+
+        with open(self.file_path, 'r') as file:
+            self.editor_text.insert("1.0", file.read())
+
+        self.save_button = Button(self.editor_window, text="Save", bg=self.off_color, height=1, width=15)
+        self.save_button.grid(row=1, column=0, pady=(0, 10))
 
     def primary_color_change(self):
         pass
