@@ -101,6 +101,7 @@ class Gui:
             self.created_cpu = self.cpu_class(self.root.filename, self)
             self.file_path = self.root.filename
             self.run_button.config(state='normal')
+            self.edit_file_button.config(state='normal')
         except Exception as e:
             self.print_error(e)
             print(e)
