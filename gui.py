@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import colorchooser
 from functions import *
 
 class Gui:
@@ -10,17 +11,17 @@ class Gui:
         self.root.title("UV Simulator")
         self.root.geometry('520x350')
         # root.iconbitmap("folder/image.ico")
-        
-        #Set colors for things
-        self.primary_color = "#4C721D"
-        self.off_color = "#FFFFFF"
-        self.root.configure(bg=self.primary_color)
 
         #variables to help with cpu
         self.cpu_class = cpu_class
         self.created_cpu = None
         self.file_path = None
         self.pointer = 0
+        
+        #Set colors for things
+        self.primary_color = "#4C721D"
+        self.off_color = "#FFFFFF"
+        self.root.configure(bg=self.primary_color)
 
         #setup
 
@@ -37,8 +38,8 @@ class Gui:
 
         #Input related buttons and fields
         self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text",width=60,padx=2, bg=self.off_color)
-        self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled")
-        self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled")
+        self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
+        self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled", bg=self.off_color)
 
         #Color picker buttons
         self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=17, command=self.primary_color_change)
@@ -46,6 +47,13 @@ class Gui:
 
         #Edit file button
         self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=1, width=7, state='disabled', command=self.open_editor)
+
+        #Setup for color changer
+        self.primary_color_items = [self.root,self.output_box_margin]
+        self.off_color_items = [self.output_box,self.output_box_text,self.error_text,
+                                self.file_upload_button,self.run_button,self.reset_button,
+                                self.input_field_text,self.input_field,self.enter_value,
+                                self.primary_color_picker,self.off_color_picker,self.edit_file_button]
 
         #Welcome to program text
         self.output_box_text.config(state="normal")
@@ -68,7 +76,6 @@ class Gui:
     #display classes
     
     def setup_gui_display(self):
-
         #Output box and children
         self.output_box_margin.grid(row=0,columnspan=4,pady=10,padx=10)     #provides a nice looking margin
         self.output_box.grid(row=0,column=0,columnspan=4)
@@ -161,13 +168,13 @@ class Gui:
             if need_input == True:
                 # sets the input field and enter button to active and makes the program wait for input before continuing
                 self.change_input_label(print_val)
-                self.input_field.config(bg="yellow")
+                # self.input_field.config(bg="yellow")
                 self.input_field.config(state='normal')
                 self.enter_value.config(state='normal')
                 break
 
             if halted == True:
-                self.reset_button.config(state='active')
+                self.reset_button.config(state='normal')
 
     def gui_reset(self):
         self.run_button.config(state="normal")
@@ -192,10 +199,24 @@ class Gui:
         self.save_button.grid(row=1, column=0, pady=(0, 10))
 
     def primary_color_change(self):
-        pass
+        new_color = colorchooser.askcolor()
+        self.primary_color = new_color[1]
+        for item in self.primary_color_items:
+            item.configure(bg=self.primary_color)
+
+        if hasattr(self, "editor_window") and self.editor_window.winfo_exists():
+            self.editor_window.configure(bg=self.primary_color)
 
     def off_color_change(self):
-        pass
+        new_color = colorchooser.askcolor()
+        self.off_color = new_color[1]
+        self.input_field.configure(disabledbackground=self.off_color)
+        for item in self.off_color_items:
+            item.configure(bg=self.off_color)
+
+        if hasattr(self, "editor_window") and self.editor_window.winfo_exists():
+            self.editor_text.configure(bg=self.off_color)
+            self.save_button.configure(bg=self.off_color)
 
     #output classes
     def change_input_label(self,output_text):
