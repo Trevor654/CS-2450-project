@@ -190,26 +190,36 @@ class Gui:
         self.editor_window.configure(bg=self.primary_color)
 
         self.editor_text = Text(self.editor_window, bg=self.off_color, height=20, width=30, font=("Arial", 10))
-        self.editor_text.grid(row=0, column=0, padx=10, pady=10)
+        self.editor_text.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         with open(self.file_path, 'r') as file:
             self.editor_text.insert("1.0", file.read())
 
-        self.save_button = Button(self.editor_window, text="Save", bg=self.off_color, height=1, width=15, command=self.save_file)
+        self.save_button = Button(self.editor_window, text="Save", bg=self.off_color, height=1, width=10, command=self.save_file)
         self.save_button.grid(row=1, column=0, pady=(0, 10))
+        self.save_as_button = Button(self.editor_window, text="Save As", bg=self.off_color, height=1, width=10, command=self.save_as_file)
+        self.save_as_button.grid(row=1, column=1, pady=(0, 10))
 
     def save_file(self):
-        #"end-1c" leaves off the extra newline the Text box adds at the end
+        #"end-1c" leaves off the extra newline
         with open(self.file_path, 'w') as file:
             file.write(self.editor_text.get("1.0", "end-1c"))
 
-        #Reload the file so it gets checked, and keep the window open if it has an error
+        #Reload the file so that gets checked, and keep the window open if it has an error
         try:
             self.created_cpu = self.cpu_class(self.file_path, self)
             self.print_error(' ')
             self.editor_window.destroy()
         except Exception as e:
             self.print_error(e)
+
+    def save_as_file(self):
+        #Lets the usr pick a new name and folder then saves there and uses that file from now on
+        new_path = filedialog.asksaveasfilename(parent=self.editor_window, title="Save file as", defaultextension=".txt", filetypes=[('txt files', '*.txt')])
+        if not new_path:
+            return
+        self.file_path = new_path
+        self.save_file()
 
     def primary_color_change(self):
         new_color = colorchooser.askcolor()
@@ -230,6 +240,7 @@ class Gui:
         if hasattr(self, "editor_window") and self.editor_window.winfo_exists():
             self.editor_text.configure(bg=self.off_color)
             self.save_button.configure(bg=self.off_color)
+            self.save_as_button.configure(bg=self.off_color)
 
     #output classes
     def change_input_label(self,output_text):
