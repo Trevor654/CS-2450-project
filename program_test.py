@@ -1,7 +1,7 @@
 import pytest
 from main import CPU
 
-def test_init_bad_argument():
+def test_load_file_bad_argument():
     # Testing if the argument given is an invalid testfile
     with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/randomstring.txt' does not exist or the filepath is invalid"): 
         CPU1 = CPU('Testing_files/randomstring.txt')
@@ -10,7 +10,7 @@ def test_init_bad_argument():
     with pytest.raises(FileNotFoundError, match=r"File 'Testing_files/idk' does not exist or the filepath is invalid"): 
         CPU3 = CPU('Testing_files/idk')
 
-def test_init_invalid_string_in_file():
+def test_load_file_invalid_string_in_file():
     with pytest.raises(ValueError, match=r"Invalid command\(s\) in the given file: \+11aa"): 
         CPU1 = CPU('Testing_files/test_bad_string_1.txt')
     with pytest.raises(ValueError, match=r"Invalid command\(s\) in the given file: \+30082"): 
