@@ -288,6 +288,7 @@ class ControlUnit:
         '''halts the program if the command given to it is the string 43'''
         if command == '43':
             self.cpu.output('Halted')
+            self.cpu.output('')
             return True
         else:
             return False
