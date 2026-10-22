@@ -200,12 +200,22 @@ class Gui:
         self.save_as_button = Button(self.editor_window, text="Save As", bg=self.off_color, height=1, width=10, command=self.save_as_file)
         self.save_as_button.grid(row=1, column=1, pady=(0, 10))
 
+    def over_max_size(self):
+        #Memory only has 100 spots (00 - 99)
+        if len(self.editor_text.get("1.0", "end-1c").split('\n')) > 100:
+            self.print_error("Error: can't save, over max size of 100 entries")
+            return True
+        return False
+
     def save_file(self):
+        if self.over_max_size():
+            return
+
         #"end-1c" leaves off the extra newline
         with open(self.file_path, 'w') as file:
             file.write(self.editor_text.get("1.0", "end-1c"))
 
-        #Reload the file so that gets checked, and keep the window open if it has an error
+        #Reload the file so that gets checked and keep the window open if error
         try:
             self.created_cpu = self.cpu_class(self.file_path, self)
             self.print_error(' ')
@@ -215,6 +225,8 @@ class Gui:
 
     def save_as_file(self):
         #Lets the usr pick a new name and folder then saves there and uses that file from now on
+        if self.over_max_size():
+            return
         new_path = filedialog.asksaveasfilename(parent=self.editor_window, title="Save file as", defaultextension=".txt", filetypes=[('txt files', '*.txt')])
         if not new_path:
             return
