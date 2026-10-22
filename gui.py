@@ -105,10 +105,12 @@ class Gui:
         try:
             if self.root.filename == '':
                 raise FileNotFoundError("Please select a file")
-            self.created_cpu = self.cpu_class(self.root.filename, self)
+            #Edit is allowed even if the file is malformed, so the user can fix it
             self.file_path = self.root.filename
-            self.run_button.config(state='normal')
             self.edit_file_button.config(state='normal')
+            self.run_button.config(state='disabled')
+            self.created_cpu = self.cpu_class(self.root.filename, self)
+            self.run_button.config(state='normal')
         except Exception as e:
             self.print_error(e)
             print(e)
@@ -219,8 +221,10 @@ class Gui:
         try:
             self.created_cpu = self.cpu_class(self.file_path, self)
             self.print_error(' ')
+            self.run_button.config(state='normal')
             self.editor_window.destroy()
         except Exception as e:
+            self.run_button.config(state='disabled')
             self.print_error(e)
 
     def save_as_file(self):

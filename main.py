@@ -112,7 +112,11 @@ class FileHandler:
             commands = filecontent.split('\n')
         except:
             raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
-        
+
+        # Memory only has 100 spots (00 - 99), so the file can't have more than 100 lines
+        if len(commands) > 100:
+            raise ValueError("File is over the max size of 100 entries")
+
         # Loading in the commands from the file into the dictionary
         validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
         halted = False
