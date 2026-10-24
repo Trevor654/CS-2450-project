@@ -49,15 +49,17 @@ Depending on the Python installation, the command may instead be:
 
 Running `main.py` opens the UVSim graphical user interface.
 
-The user does not need to manually run `gui.py`.
+The user should not manually run `gui.py`.
 
 ## Using the GUI
 
 The UVSim GUI contains two main screens.
 
-The first screen is used to select a UVSim program file.
+The first screen is the main screen that contains the file selector, the Run and Reset buttons, the user input box, the output box, and the Enter and Edit File buttons. Here is an image of what the first screen looks like on Mac:
 
-The second screen is used to run the program, enter requested values, and view the program's output.
+![Startup Screen Image](./README_images/startup_screen.png)
+
+The color scheme is initially set to match that of UVU's colors.
 
 ### Open File
 
@@ -67,17 +69,11 @@ Select a `.txt` file containing a UVSim program.
 
 The program attempts to validate the file before allowing it to run.
 
-If the file is valid, the CPU is created and the GUI moves to the program execution screen.
+If the file is valid, the CPU is created and the Run button becomes clickable.
 
-If the selected file contains invalid UVSim instructions, an error message is displayed instead of running the file.
+If the selected file contains invalid UVSim instructions, an error message is displayed underneath the output textbox instead of running the file.
 
 If the file-selection window is closed without selecting a file, the GUI displays an error asking the user to select a file.
-
-### Next Page
-
-The `Next page` button changes from the home screen to the program execution screen.
-
-Normally, the recommended workflow is to select a program using `Open File` first so a CPU and program are available before attempting to run anything.
 
 ### Run
 
@@ -94,7 +90,13 @@ Depending on the program, execution may:
 - Branch to another instruction
 - Halt the program
 
-The Run button is disabled while the current program is executing so the same program is not started multiple times at once.
+After being clicked, the Run button is disabled so the same program does not start multiple times at once.
+
+If you wish to run the same program again, either click the Open File button and select the same file, or click the Reset Button and then click the Run button again.
+
+### Reset
+
+The `Reset` button clears the output box's contents and preps the program to run again the same file that the user previously selected.
 
 ### Output Box
 
@@ -106,7 +108,7 @@ Other user-facing CPU messages, such as the `Halted` message, can also appear in
 
 Each new output is added on a new line rather than replacing the previous output. The output box automatically moves to the most recent output as additional values are displayed.
 
-The output box is read-only, so the user cannot accidentally type into it.
+The output box is read-only, so the user cannot type into it.
 
 ### Input Field
 
@@ -154,11 +156,31 @@ If the input is valid, the CPU stores the value in the memory location specified
 
 If the input is invalid, execution does not continue until the user enters a valid value.
 
-### Go Back
+### Change Primary color
 
-The `Go back` button returns the user to the home screen.
+The `Change Primary Color` button opens a color picker for the user to select the background color of the GUI. This effects the main screen as well as the `Edit File` Screen.
 
-The Run button is re-enabled when returning to the home screen so another program can be selected and run.
+### Change Off color
+
+The `Change Off color` button opens a color picker for the user to select the textbox colors and button colors of the GUI. This effects the main screen as well as the `Edit File` Screen.
+
+### Edit File
+
+The Edit File button becomes selectable once the user opens a .txt file whether or not the file is valid or contains malformed code. Clicking the Edit File button will open the second main screen that the user can use, which is the Edit File screen:
+
+![Startup Screen Image](./README_images/edit_file_screen.png)
+
+The Edit File screen is populated with the commands of the user-selected .txt file. The text box is editable, allowing the user to make adjustments to the code through the program without needing to open up the file seperately. This is useful if the file is malformed or if the user wants to change the functionality of their code.
+
+Once the user finishes editing their code though the textbox, the user can either select to `Save`, or `Save as`.
+
+`Save` modifies the currently selected file to match the modifications that the user made within the file editor screen. 
+
+`Save as` allows the user to make a copy of the file to a desired location in their filesystem without modifying the original file.
+
+Additional validation will be performed when the user clicks `Save` or `Save as`. If the edits contain invalid content, an error will be shown to the first GUI screen, and the contents will not be savable until the errors are fixed by the user. 
+
+When the user selects `Save` or `Save as` and all lines of code are valid, the program will be loaded with the new file modifications, ready to run.
 
 ## Program File Format
 
@@ -181,9 +203,9 @@ In this instruction:
 - `20` is the operation code.
 - `10` is the memory address used by the operation.
 
-The CPU contains 100 memory locations numbered `00` through `99`.
+The CPU contains 100 memory locations numbered `00` through `99`. Program instructions are loaded into memory starting at location `00`. 
 
-Program instructions are loaded into memory starting at location `00`.
+The user must select a file that is 100 lines of commands long or less. If the user selects a .txt file with more than 100 lines of commands, an error is displayed to the screen.
 
 Unused memory locations are initialized to:
 
@@ -300,6 +322,10 @@ The `CPU` class manages:
 
 The CPU determines the current operation code and sends the operation to the appropriate unit.
 
+### FileHandler
+
+The `FileHandler` handles file validation. If the contents of the selected .txt file do not match the structure outlined in **Program File Format**, the GUI will display an error explaining the issue with the selected file.
+
 ### CommunicationUnit
 
 The `CommunicationUnit` handles:
@@ -348,13 +374,14 @@ The `Gui` class provides the graphical interface.
 It handles:
 
 - File selection
-- Screen navigation
 - Starting and continuing CPU execution
 - User input
 - Input validation
 - Displaying output
 - Displaying errors
 - Enabling and disabling controls when input is required
+- Editing capabilities
+- Saving file edits
 
 ### Utility Functions
 
@@ -390,6 +417,7 @@ Errors that may be detected include:
 - A program attempts to access an invalid memory location.
 - A DIVIDE operation attempts to divide by zero.
 - User input does not match one of the accepted READ formats.
+- The file contains more than 100 lines of commands (whitespace included)
 
 Malformed UVSim files produce an error instead of being executed.
 
@@ -433,13 +461,14 @@ A typical use of the application is:
 1. Run `python main.py`.
 2. Click `Open File`.
 3. Select a valid UVSim `.txt` program.
-4. Click `Run`.
-5. If the program requests input, type the requested value into the input field.
-6. Click `Enter`.
-7. Continue entering values if additional READ instructions occur.
-8. View WRITE results in the output box.
-9. The program continues until a HALT instruction is reached.
-10. Click `Go back` to return to the home screen and select another program if desired.
+4. Edit the file using `Edit File` if an error arises and save the edits.
+5. Click `Run`.
+6. If the program requests input, type the requested value into the input field.
+7. Click `Enter`.
+8. Continue entering values if additional READ instructions occur.
+9. View WRITE results in the output box.
+10. The program continues until a HALT instruction is reached.
+11. Click `Open File` to choose a new file to run or `Reset` then `Run` again to rerun the same file.
 
 ## Group Members
 
