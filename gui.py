@@ -9,7 +9,7 @@ class Gui:
         #General GUI setup
         self.root = Tk()
         self.root.title("UV Simulator")
-        self.root.geometry('520x350')
+        self.root.geometry('515x330')
         # root.iconbitmap("folder/image.ico")
 
         #variables to help with cpu
@@ -25,35 +25,36 @@ class Gui:
 
         #setup
 
-        #Ouput box and children
-        self.output_box_margin = Label(self.root, bg=self.primary_color, pady=10, padx=10, width=100)
-        self.output_box = Label(self.output_box_margin, bg=self.off_color, height=10, width=90, pady=10)        #Parent for output_box_text and error_text
-        self.output_box_text = Text(self.output_box, bg=self.off_color, bd=0, height=10, width=90, state="disabled", font=("Arial", 10))
-        self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=55, font=("Arial", 10))
+        #Color picker buttons
+        self.primary_color_picker = Button(self.root, text="Primary color", bg=self.off_color, height=1, width=13, command=self.primary_color_change)
+        self.off_color_picker = Button(self.root, text="Off color", bg=self.off_color, height=1, width=11, command=self.off_color_change)
+        self.new_window_button = Button(self.root, text="New Window", bg=self.off_color, height=1)
 
-        #Left side buttons
-        self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, command=self.file_select, height=2, width=15)
-        self.run_button = Button(self.root, text="Run", bg=self.off_color, command=self.gui_run_setup, height=2, width=15, state='disabled')
-        self.reset_button = Button(self.root, text="Reset", bg=self.off_color, command=self.gui_reset, height=2, width=15, state='disabled')
+        #Ouput box and children
+        self.output_box_margin = Label(self.root, bg=self.primary_color, pady=10, padx=10, width=190)
+        self.output_box = Label(self.output_box_margin, bg=self.off_color, height=10, width=130, pady=10)        #Parent for output_box_text and error_text
+        self.output_box_text = Text(self.output_box, bg=self.off_color, bd=0, height=10, width=130, state="disabled", font=("Arial", 10))
+        self.error_text = Label(self.output_box, text=" ", fg="red", bg=self.off_color, height=1, width=50, font=("Arial", 10))
+
+        #Row 2
+        self.file_upload_button = Button(self.root, text="Open File", bg=self.off_color, height=2, width=13, command=self.file_select)
+        self.run_button = Button(self.root, text="Run", bg=self.off_color, height=2, width=13, state='disabled', command=self.gui_run_setup)
+
+        #Row 3
+        self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=2, width=13, state='disabled', command=self.open_editor)
+        self.reset_button = Button(self.root, text="Reset", bg=self.off_color, height=2, width=13, state='disabled', command=self.gui_reset)
 
         #Input related buttons and fields
-        self.input_field_text = Label(self.root, text="When needed, please input text in the box under this text",width=60,padx=2, bg=self.off_color)
-        self.input_field = Entry(self.root, width=24, font=('Arial', 14), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
-        self.enter_value = Button(self.root, text="Enter", command=self.get_input, width=7, height=2, state="disabled", bg=self.off_color)
-
-        #Color picker buttons
-        self.primary_color_picker = Button(self.root, text="Change Primary color", bg=self.off_color, height=1, width=17, command=self.primary_color_change)
-        self.off_color_picker = Button(self.root, text="Change Off color", bg=self.off_color, height=1, width=15, command=self.off_color_change)
-
-        #Edit file button
-        self.edit_file_button = Button(self.root, text="Edit File", bg=self.off_color, height=1, width=7, state='disabled', command=self.open_editor)
+        self.input_field_text = Label(self.root, text="When needed, input text in the box below",font=('Arial', 8), width=34,padx=2, bg=self.off_color)
+        self.input_field = Entry(self.root, width=24, font=('Arial', 13), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
+        self.enter_value = Button(self.root, text="Enter", font=('Arial', 13), width=6, height=1, state="disabled", bg=self.off_color, command=self.get_input)
 
         #Setup for color changer
         self.primary_color_items = [self.root,self.output_box_margin]
         self.off_color_items = [self.output_box,self.output_box_text,self.error_text,
                                 self.file_upload_button,self.run_button,self.reset_button,
                                 self.input_field_text,self.input_field,self.enter_value,
-                                self.primary_color_picker,self.off_color_picker,self.edit_file_button]
+                                self.primary_color_picker,self.off_color_picker,self.edit_file_button,self.new_window_button]
 
         #Welcome to program text
         self.output_box_text.config(state="normal")
@@ -64,11 +65,11 @@ class Gui:
         #Put the gui objects on the gui
         self.setup_gui_display()
 
-        #Formating to center page 2 stuff
+        #Formating to center things
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
-        self.root.columnconfigure(2, weight=1)
-        self.root.columnconfigure(3, weight=1)
+        self.root.columnconfigure(2, weight=0)
+        self.root.columnconfigure(3, weight=0)
 
         #Allows the thing to close
         self.root.mainloop()
@@ -76,28 +77,30 @@ class Gui:
     #display classes
     
     def setup_gui_display(self):
-        #Output box and children
-        self.output_box_margin.grid(row=0,columnspan=4,pady=10,padx=10)     #provides a nice looking margin
-        self.output_box.grid(row=0,column=0,columnspan=4)
-        self.output_box_text.grid(row=0,column=0,columnspan=4)
-        self.error_text.grid(row=1,column=0,columnspan=1)
-
-        #Buttons on the left
-        self.file_upload_button.grid(row=2,column=0)
-        self.run_button.grid(row=3,column=0)
-        self.reset_button.grid(row=4,column=0)
-
-        #Input field buttons
-        self.input_field_text.grid(row=2,column=1,columnspan=2,padx=2)
-        self.input_field.grid(row=3,column=1,ipady=10,columnspan=2)
-        self.enter_value.grid(row=3,column=3)
 
         #Color change buttons
-        self.primary_color_picker.grid(row=4,column=1)
-        self.off_color_picker.grid(row=4,column=2)
+        self.primary_color_picker.grid(row=0,column=0)
+        self.off_color_picker.grid(row=0,column=1)
+        self.new_window_button.grid(row=0,column=4)
 
-        #Edit file button
-        self.edit_file_button.grid(row=4,column=3)
+        #Output box and children
+        self.output_box_margin.grid(row=1,columnspan=5,pady=10,padx=(10,30))     #provides a nice looking margin
+        self.output_box.grid(row=1,column=0,columnspan=5)
+        self.output_box_text.grid(row=1,column=0,columnspan=5)
+        self.error_text.grid(row=2,column=0,columnspan=2,padx=(0,10))
+
+        #Row 2
+        self.file_upload_button.grid(row=2,column=0)
+        self.run_button.grid(row=2,column=1)
+
+        #Row 3
+        self.edit_file_button.grid(row=3,column=0)
+        self.reset_button.grid(row=3,column=1)
+        
+        #Input field buttons
+        self.input_field_text.grid(row=2,column=2,columnspan=3,padx=(0,20))
+        self.input_field.grid(row=3,column=2,ipady=7,columnspan=3,padx=(10,30))
+        self.enter_value.grid(row=3,column=4,padx=(15,0))
 
     #user input classes
     def file_select(self):
