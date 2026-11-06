@@ -37,7 +37,6 @@ class CPU:
 
         while not halted:
             fullCommandString = self.memory[pointer]      # This goes through the commands one by one
-            commandSign = fullCommandString[0]            # This refers to if the command is positive or negative
             command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
             value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
             # print(pointer,fullCommandString, gui_input)
@@ -300,18 +299,4 @@ class ControlUnit:
 
 if __name__ == '__main__':
     Gui(CPU)
-    # myCPU = CPU('Testing_files/testfile.txt')
-    # myCPU.run()
-    
-
-    # while True:    
-    #     try:
-    #         file = input('Please type the file path to the file you want to run (ex. Testing_files/testfile.txt)\n')
-    #         if file.lower() == 'break':
-    #             break
-    #         myCPU = CPU(file)
-    #         myCPU.run()  # added run call
-    #         print('\n--------------------Functions complete--------------------\n')
-    #         break
-    #     except Exception as e:
-    #         print(e)
+ 
