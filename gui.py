@@ -9,7 +9,7 @@ class Gui:
         #General GUI setup
         self.root = Tk()
         self.root.title("UV Simulator")
-        self.root.geometry('475x330')
+        self.root.geometry('450x330')
         # root.iconbitmap("folder/image.ico")
 
         #variables to help with cpu
@@ -45,7 +45,7 @@ class Gui:
         self.reset_button = Button(self.root, text="Reset", bg=self.off_color, height=2, width=13, state='disabled', command=self.gui_reset)
 
         #Input related buttons and fields
-        self.input_field_text = Label(self.root, text="When needed, input text in the box below",font=('Arial', 8), width=34,padx=2, bg=self.off_color)
+        self.input_field_text = Label(self.root, text="When needed, input text in the box below",font=('Arial', 8), width=36, bg=self.off_color)
         self.input_field = Entry(self.root, width=24, font=('Arial', 13), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
         self.enter_value = Button(self.root, text="Enter", font=('Arial', 13), width=6, height=1, state="disabled", bg=self.off_color, command=self.get_input)
 
@@ -81,10 +81,10 @@ class Gui:
         #Color change buttons
         self.primary_color_picker.grid(row=0,column=0,padx=(10,0))
         self.off_color_picker.grid(row=0,column=1)
-        self.new_window_button.grid(row=0,column=4)
+        self.new_window_button.grid(row=0,column=4,padx=(100,0))
 
         #Output box and children
-        self.output_box_margin.grid(row=1,columnspan=5,pady=10,padx=(10,30))     #provides a nice looking margin
+        self.output_box_margin.grid(row=1,columnspan=5,pady=10,padx=(10,10))     #provides a nice looking margin
         self.output_box.grid(row=1,column=0,columnspan=5)
         self.output_box_text.grid(row=1,column=0,columnspan=5)
         self.error_text.grid(row=2,column=0,columnspan=2,padx=(0,10))
@@ -98,9 +98,9 @@ class Gui:
         self.reset_button.grid(row=3,column=1)
         
         #Input field buttons
-        self.input_field_text.grid(row=2,column=2,columnspan=3,padx=(0,20))
-        self.input_field.grid(row=3,column=2,ipady=7,columnspan=3,padx=(10,30))
-        self.enter_value.grid(row=3,column=4,padx=(15,0))
+        self.input_field_text.grid(row=2,column=2,columnspan=3,padx=(10,10))
+        self.input_field.grid(row=3,column=2,ipady=7,columnspan=3,padx=(10,10))
+        self.enter_value.grid(row=3,column=4,padx=(110,0))
 
     #user input classes
     def file_select(self):
@@ -141,7 +141,7 @@ class Gui:
         self.pointer = pointer_int 
 
         #Sets fields to reset after recieving input
-        self.change_input_label("When needed, please input text in the box under this text")
+        self.change_input_label("When needed, input text in the box below")
         self.input_field.delete(0, 'end')
         self.input_field.config(state='disabled')
         self.enter_value.config(state='disabled')
