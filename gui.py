@@ -9,7 +9,7 @@ class Gui:
         #General GUI setup
         self.root = Tk()
         self.root.title("UV Simulator")
-        self.root.geometry('515x330')
+        self.root.geometry('475x330')
         # root.iconbitmap("folder/image.ico")
 
         #variables to help with cpu
@@ -27,7 +27,7 @@ class Gui:
 
         #Color picker buttons
         self.primary_color_picker = Button(self.root, text="Primary color", bg=self.off_color, height=1, width=13, command=self.primary_color_change)
-        self.off_color_picker = Button(self.root, text="Off color", bg=self.off_color, height=1, width=11, command=self.off_color_change)
+        self.off_color_picker = Button(self.root, text="Off color", bg=self.off_color, height=1, width=13, command=self.off_color_change)
         self.new_window_button = Button(self.root, text="New Window", bg=self.off_color, height=1)
 
         #Ouput box and children
@@ -79,7 +79,7 @@ class Gui:
     def setup_gui_display(self):
 
         #Color change buttons
-        self.primary_color_picker.grid(row=0,column=0)
+        self.primary_color_picker.grid(row=0,column=0,padx=(10,0))
         self.off_color_picker.grid(row=0,column=1)
         self.new_window_button.grid(row=0,column=4)
 
@@ -90,11 +90,11 @@ class Gui:
         self.error_text.grid(row=2,column=0,columnspan=2,padx=(0,10))
 
         #Row 2
-        self.file_upload_button.grid(row=2,column=0)
+        self.file_upload_button.grid(row=2,column=0,padx=(10,0))
         self.run_button.grid(row=2,column=1)
 
         #Row 3
-        self.edit_file_button.grid(row=3,column=0)
+        self.edit_file_button.grid(row=3,column=0,padx=(10,0))
         self.reset_button.grid(row=3,column=1)
         
         #Input field buttons
