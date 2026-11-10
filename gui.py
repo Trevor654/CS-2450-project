@@ -1,3 +1,4 @@
+import multiprocessing
 from tkinter import *
 from tkinter import filedialog
 from tkinter import colorchooser
@@ -28,7 +29,7 @@ class Gui:
         #Color picker buttons
         self.primary_color_picker = Button(self.root, text="Primary color", bg=self.off_color, height=1, width=13, command=self.primary_color_change)
         self.off_color_picker = Button(self.root, text="Off color", bg=self.off_color, height=1, width=13, command=self.off_color_change)
-        self.new_window_button = Button(self.root, text="New Window", bg=self.off_color, height=1)
+        self.new_window_button = Button(self.root, text="New Window", bg=self.off_color, height=1, command=self.new_window)
 
         #Ouput box and children
         self.output_box_margin = Label(self.root, bg=self.primary_color, pady=10, padx=10, width=190)
@@ -51,10 +52,12 @@ class Gui:
 
         #Setup for color changer
         self.primary_color_items = [self.root,self.output_box_margin]
-        self.off_color_items = [self.output_box,self.output_box_text,self.error_text,
-                                self.file_upload_button,self.run_button,self.reset_button,
-                                self.input_field_text,self.input_field,self.enter_value,
-                                self.primary_color_picker,self.off_color_picker,self.edit_file_button,self.new_window_button]
+        self.off_color_items = [
+                                self.primary_color_picker,self.off_color_picker,self.new_window_button,
+                                self.output_box,self.output_box_text,self.error_text,
+                                self.file_upload_button,self.run_button,self.input_field_text,
+                                self.edit_file_button,self.reset_button,self.input_field,self.enter_value,
+                                ]
 
         #Welcome to program text
         self.output_box_text.config(state="normal")
@@ -75,7 +78,10 @@ class Gui:
         self.root.mainloop()
     
     #display classes
-    
+
+    def new_window(self):
+        multiprocessing.get_context('spawn').Process(target=Gui, args=(self.cpu_class,)).start()
+
     def setup_gui_display(self):
 
         #Color change buttons
