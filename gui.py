@@ -127,7 +127,11 @@ class Gui:
     def get_input(self):
         the_input = self.input_field.get()
         self.input_field_text.config(fg="black")
-        if (checkValidInput5chars(the_input) == False) and (checkValidInput4chars(the_input) == False):
+
+        validateInputSigned = checkValidInput7chars if self.created_cpu._fileFormat == "six-digit" else checkValidInput5chars
+        validateInputUnsigned = checkValidInput6chars if self.created_cpu._fileFormat == "six-digit" else checkValidInput4chars
+        
+        if (validateInputSigned(the_input) == False) and (validateInputUnsigned(the_input) == False):
             self.input_field_text.config(fg="red")
             return
         self.gui_run(self.pointer,the_input)
