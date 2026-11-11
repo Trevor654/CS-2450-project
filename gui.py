@@ -212,9 +212,9 @@ class Gui:
         self.save_as_button.grid(row=1, column=1, pady=(0, 10))
 
     def over_max_size(self):
-        #Memory only has 100 spots (00 - 99)
-        if len(self.editor_text.get("1.0", "end-1c").split('\n')) > 100:
-            self.print_error("Error: can't save, over max size of 100 entries")
+        #Memory only has 250 spots (000 - 249)
+        if len(self.editor_text.get("1.0", "end-1c").split('\n')) > self.created_cpu.maxFileSize:
+            self.print_error(f"Error: can't save, over max size of {self.created_cpu.maxFileSize} entries")
             return True
         return False
 
