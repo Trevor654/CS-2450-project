@@ -9,15 +9,13 @@ class CPU:
         self.gui = gui          # The GUI for the CPU
 
         self.maxFileSize = 250
-        self.memory = {}        # Main memory dictionary
-        for i in range(self.maxFileSize):
-            self.memory[i] = '+0000'
-
+        self.memory = {}                                # Main memory dictionary
+        self._fileFormat = 'six-digit'                  # Format for the input file (default = 'six-digit' format, the other option is 'four-digit')
         self._fileHandler = FileHandler(self)           ## File Handler Object that handles file checking.
-        self._fileHandler.loadDataFromFile(filename)    ## Throws errors depending if the file is not found or is malformed
+        self._fileHandler.loadDataFromFile(filename)    ## Throws errors depending if the file is not found or is malformed. Also changes the code to 4 digit if that's what the user inputs.
 
         # Other variables
-        self._accumulator = '+0000'
+        self._accumulator = '+000000' if self._fileFormat == 'six-digit' else '+0000'
         self._communicationUnit = CommunicationUnit(self)
         self._arithmeticUnit = ArithmeticUnit(self)
         self._controlUnit = ControlUnit(self)
@@ -38,62 +36,68 @@ class CPU:
 
         while not halted:
             fullCommandString = self.memory[pointer]      # This goes through the commands one by one
-            command = fullCommandString[1:3]              # The first two numbers of the command in form '+####'. The 3rd index is non inclusive
-            value = fullCommandString [3:5]               # The last two numbers of the command, or the value of the command
-            # print(pointer,fullCommandString, gui_input)
+            command = fullCommandString[1:4] if self._fileFormat == "six-digit" else fullCommandString[1:3]             # The command in from '+####' or '+######'. 
+            value = fullCommandString[4:7] if self._fileFormat == "six-digit" else fullCommandString[3:5]               # The last two or three numbers of the command, AKA the value of the command
+
+            commandCheck = command
+            if self._fileFormat == "four-digit":
+                commandCheck = "0" + commandCheck
             
-            match command:
-                case '10':
+            match commandCheck:
+                case '010':
                     got_input = self._communicationUnit.READ(value,gui_input)
                     if got_input == True:
                         need_input = False
                         pointer += 1
                         return (halted, pointer, need_input, print_val)
                     else:
-                        print_val = "Please Enter a value in this format: +/-0000: "
+                        if (self._fileFormat == "six-digit"):
+                            print_val = "Please Enter a value in this format: +/-000000: "
+                        elif (self._fileFormat == "four-digit"):
+                            print_val = "Please Enter a value in this format: +/-0000: "
                         need_input = True
                         return (halted, pointer, need_input, print_val)
 
-                case '11':
+                case '011':
                     self._communicationUnit.WRITE(value)
                     
-                case '20':
+                case '020':
                     self._controlUnit.LOAD(value)
 
-                case '21':
+                case '021':
                     self._controlUnit.STORE(value)
 
-                case '30':
+                case '030':
                     self._arithmeticUnit.ADD(value)
 
-                case '31':
+                case '031':
                     self._arithmeticUnit.SUBTRACT(value)
 
-                case '32':
+                case '032':
                     self._arithmeticUnit.DIVIDE(value)
 
-                case '33':
+                case '033':
                     self._arithmeticUnit.MULTIPLY(value)
 
-                case '40':
+                case '040':
                     pointer = self._controlUnit.BRANCH(value)
 
-                case '41':
+                case '041':
                     branch_val = self._controlUnit.BRANCHNEG(value)
                     if type(branch_val) == int:
                         pointer = branch_val
 
-                case '42':
+                case '042':
 
                     branch_val = self._controlUnit.BRANCHZERO(value)
                     if type(branch_val) == int:
                         pointer = branch_val
 
-                case '43':
-                    halted = self._controlUnit.HALT(command)
+                case '043':
+                    halted = self._controlUnit.HALT(commandCheck)
 
                 case _:
-                    raise ValueError("Command '" + fullCommandString + "' is not a valid command")
+                    raise ValueError("Command '" + command + "' is not a valid command")
 
             pointer += 1
             return (halted, pointer, need_input, print_val)
@@ -113,21 +117,33 @@ class FileHandler:
         except:
             raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
 
+        # See what the file format is and change it to 'four-digit' if the user inputs a 4-digit command
+        defaultCommand = '+000000'
+        if len(commands) > 0:
+            if len(commands[0]) == 5:
+                self.cpu._fileFormat = "four-digit"
+                defaultCommand = '+0000'
+
+        # Load in the default memory slots
+        for i in range(self.cpu.maxFileSize):
+            self.cpu.memory[i] = defaultCommand
+
         # Memory only has 250 spots (000 - 249), so the file can't have more than 250 lines
         if len(commands) > self.cpu.maxFileSize:
             raise ValueError(f"File is over the max size of {self.cpu.maxFileSize} entries")
 
         # Loading in the commands from the file into the dictionary
-        validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
+        validCommands = ['010','011','020','021','030','031','032','033','040','041','042','043']
+        validateInputSigned = checkValidInput7chars if self.cpu._fileFormat == "six-digit" else checkValidInput5chars
         halted = False
         for i in range(len(commands)):
-            command = commands[i][1:3]
+            command = commands[i][1:4] if self.cpu._fileFormat == "six-digit" else "0" + commands[i][1:3]
             # If there has already been a halt command, the user can input whatever values they like, as long as they fit the '+/- ####' format
             if halted:
-                if (checkValidInput5chars(commands[i]) == False):
+                if (validateInputSigned(commands[i]) == False):
                     errors = []
                     for k in range(i,len(commands)):
-                        if checkValidInput5chars(commands[k]) == False:
+                        if validateInputSigned(commands[k]) == False:
                             errors.append(commands[k])
                     errorString = "Invalid command(s) in the given file: "
                     errorStringList = ", ".join(errors)
@@ -136,10 +152,10 @@ class FileHandler:
                 self.cpu.memory[i] = commands[i]
             else:
                 # First make sure that each command is valid. If there are any invalid commands, raise an error
-                if ((checkValidInput5chars(commands[i]) == False) or (command not in validCommands)):
+                if ((validateInputSigned(commands[i]) == False) or (command not in validCommands)):
                     errors = []
                     for k in range(i,len(commands)):
-                        if checkValidInput5chars(commands[k]) == False:
+                        if validateInputSigned(commands[k]) == False:
                             errors.append(commands[k])
                     errorString = "Invalid command(s) in the given file: "
                     errorStringList = ", ".join(errors)
@@ -147,7 +163,7 @@ class FileHandler:
                     raise ValueError(errorString)
                 # Command Valid, continue
                 self.cpu.memory[i] = commands[i]
-                if command == '43':
+                if command == '043':
                     halted = True
 
 class CommunicationUnit:
@@ -156,23 +172,32 @@ class CommunicationUnit:
         self.cpu = cpu
         
     def READ(self, address, input_val='No Gui'):
+
+        validateInputSigned = checkValidInput7chars if self.cpu._fileFormat == "six-digit" else checkValidInput5chars
+        validateInputUnsigned = checkValidInput6chars if self.cpu._fileFormat == "six-digit" else checkValidInput4chars
             
         if input_val == 'No Gui':
             while True:
-                user_input = input("Enter a value (format +/-0000): ")
-                if checkValidInput5chars(user_input):
+                user_input = ""
+
+                if self.cpu._fileFormat == "six-digit":
+                    user_input = input("Enter a value (format +/-000000): ")
+                elif self.cpu._fileFormat == "four-digit":
+                    user_input = input("Enter a value (format +/-0000): ")
+
+                if validateInputSigned(user_input):
                     self.cpu.memory[int(address)] = user_input
                     break
-                elif checkValidInput4chars(user_input):
+                elif validateInputUnsigned(user_input):
                     self.cpu.memory[int(address)] = ('+' + user_input)
                     break
                 print("Invalid input.")
         else:
             user_input = input_val
-            if checkValidInput5chars(user_input):
+            if validateInputSigned(user_input):
                 self.cpu.memory[int(address)] = user_input
                 return True
-            elif checkValidInput4chars(user_input):
+            elif validateInputUnsigned(user_input):
                 self.cpu.memory[int(address)] = ('+' + user_input)
                 return True
             return False
@@ -195,10 +220,15 @@ class ArithmeticUnit:
 
         truncated_result = abs(result) % 10000
 
+        # For testing
+        # print(f"address: {address}\nmem_val: {mem_value}\nacc_val: {acc_value}\nresult: {result}\ntruncated_result: {truncated_result}")
+
+        fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
+
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
     
     #subtracts value in memory from the accumulator & then stores it
         
@@ -208,11 +238,12 @@ class ArithmeticUnit:
         result = acc_value - mem_value
 
         truncated_result = abs(result) % 10000
+        fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
 
     #divides value in memory from the accumulator & then stores it
 
@@ -224,11 +255,12 @@ class ArithmeticUnit:
         result = int(acc_value / mem_value)
 
         truncated_result = abs(result) % 10000
+        fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
 
     #multiplies value in memory from the accumulator & then stores it
 
@@ -238,11 +270,12 @@ class ArithmeticUnit:
         result = acc_value * mem_value
         
         truncated_result = abs(result) % 10000
+        fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(4)
+            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
 
 class ControlUnit:
 
@@ -288,9 +321,9 @@ class ControlUnit:
         
     #branches to a specified point in memory, but only if the accumulator is positive
 
-    def HALT(self, command='43'):
-        '''halts the program if the command given to it is the string 43'''
-        if command == '43':
+    def HALT(self, command='043'):
+        '''halts the program if the command given to it is the string 043'''
+        if command == '043':
             self.cpu.output('Halted')
             self.cpu.output('')
             return True
