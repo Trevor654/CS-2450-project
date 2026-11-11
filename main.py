@@ -8,8 +8,9 @@ class CPU:
     def __init__(self, filename: str, gui: Gui = None):
         self.gui = gui          # The GUI for the CPU
 
+        self.maxFileSize = 250
         self.memory = {}        # Main memory dictionary
-        for i in range(100):
+        for i in range(self.maxFileSize):
             self.memory[i] = '+0000'
 
         self._fileHandler = FileHandler(self)           ## File Handler Object that handles file checking.
@@ -112,9 +113,9 @@ class FileHandler:
         except:
             raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
 
-        # Memory only has 100 spots (00 - 99), so the file can't have more than 100 lines
-        if len(commands) > 100:
-            raise ValueError("File is over the max size of 100 entries")
+        # Memory only has 250 spots (000 - 249), so the file can't have more than 250 lines
+        if len(commands) > self.cpu.maxFileSize:
+            raise ValueError(f"File is over the max size of {self.cpu.maxFileSize} entries")
 
         # Loading in the commands from the file into the dictionary
         validCommands = ['10','11','20','21','30','31','32','33','40','41','42','43']
@@ -258,10 +259,10 @@ class ControlUnit:
         '''branches to a specified point in memory'''
         try:
             value = int(value)
-            if 1 <= value < 100:
+            if 1 <= value < self.cpu.maxFileSize:
                 return int(value) - 1        #subtract one here, because one will be added at the end of the run loop by default
             else:
-                self.cpu.output('Pick a value less than 100, but more than -1 to branch to')
+                self.cpu.output(f'Pick a value less than {self.cpu.maxFileSize}, but more than -1 to branch to')
                 return False
         except:
             self.cpu.output('Only can branch to an integer')
