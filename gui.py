@@ -10,8 +10,7 @@ class Gui:
         #General GUI setup
         self.root = Tk()
         self.root.title("UV Simulator")
-        self.root.geometry('450x330')
-        # root.iconbitmap("folder/image.ico")
+        self.root.geometry('550x400')
 
         #variables to help with cpu
         self.cpu_class = cpu_class
@@ -87,7 +86,7 @@ class Gui:
         #Color change buttons
         self.primary_color_picker.grid(row=0,column=0,padx=(10,0))
         self.off_color_picker.grid(row=0,column=1)
-        self.new_window_button.grid(row=0,column=4,padx=(100,0))
+        self.new_window_button.grid(row=0,column=4,padx=(145,0))
 
         #Output box and children
         self.output_box_margin.grid(row=1,columnspan=5,pady=10,padx=(10,10))     #provides a nice looking margin
@@ -106,7 +105,7 @@ class Gui:
         #Input field buttons
         self.input_field_text.grid(row=2,column=2,columnspan=3,padx=(10,10))
         self.input_field.grid(row=3,column=2,ipady=7,columnspan=3,padx=(10,10))
-        self.enter_value.grid(row=3,column=4,padx=(110,0))
+        self.enter_value.grid(row=3,column=4,padx=(160,0))
 
     #user input classes
     def file_select(self):
