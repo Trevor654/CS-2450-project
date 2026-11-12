@@ -127,10 +127,9 @@ class Gui:
         the_input = self.input_field.get()
         self.input_field_text.config(fg="black")
 
-        validateInputSigned = checkValidInput7chars if self.created_cpu._fileFormat == "six-digit" else checkValidInput5chars
-        validateInputUnsigned = checkValidInput6chars if self.created_cpu._fileFormat == "six-digit" else checkValidInput4chars
-        
-        if (validateInputSigned(the_input) == False) and (validateInputUnsigned(the_input) == False):
+        try:
+            the_input = convertNumToCommand(the_input, self.created_cpu._fileFormat)
+        except:
             self.input_field_text.config(fg="red")
             return
         self.gui_run(self.pointer,the_input)
