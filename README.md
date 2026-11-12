@@ -10,10 +10,13 @@ The following are required to run UVSim:
 
 - Python 3
 - Tkinter
+- `multiprocessing` to run multiple Guis
 - The included `functions.py` file
-- pytest, only if running the unit tests
+- `pytest`, only if running the unit tests
 
 Tkinter is part of the Python standard library and is included with most standard Python installations. No additional third-party GUI framework is required.
+
+`multiprocessing` is available in the Python standard library in every python version past version 2.6. No additional setup is required for it to run.
 
 The project does not require any additional third-party modules to run the GUI.
 
@@ -31,7 +34,7 @@ The main files used by the application are:
 - `gui.py` - Contains the Tkinter graphical user interface.
 - `functions.py` - Contains input-validation functions used by the CPU and GUI.
 - `program_test.py` - Contains automated tests for the CPU and its operations.
-- `Testing_files` - Contains UVSim program files used for testing.
+- `Testing_files` - Folder that contains UVSim program files used for testing.
 
 These files should remain together in the project structure so the imports in the program can locate the required modules.
 
@@ -55,7 +58,7 @@ The user should not manually run `gui.py`.
 
 The UVSim GUI contains two main screens.
 
-The first screen is the main screen that contains the file selector, the Run and Reset buttons, the user input box, the output box, and the Enter and Edit File buttons. Here is an image of what the first screen looks like on Mac:
+The first screen is the main screen that contains all the main program functions including the file selector, the Run and Reset buttons, the user input box and enter button, the output box, an edit file button and finally a Primary Color button to change the program's primary color (background color) and a Off Color button to change the off color (button colors). Here is an image of what the first screen looks like on Mac:
 
 ![Startup Screen Image](./README_images/startup_screen.png)
 
@@ -71,7 +74,7 @@ The program attempts to validate the file before allowing it to run.
 
 If the file is valid, the CPU is created and the Run button becomes clickable.
 
-If the selected file contains invalid UVSim instructions, an error message is displayed underneath the output textbox instead of running the file.
+If the selected file contains invalid UVSim instructions, an error message is displayed underneath the output textbox instead of running the file. However, invalid files may be editted inside the UV Sim's file editor to fix errors before running.
 
 If the file-selection window is closed without selecting a file, the GUI displays an error asking the user to select a file.
 
@@ -120,29 +123,29 @@ The GUI also changes the text above the input field to tell the user that a valu
 
 The user may enter a value using either of these formats:
 
-`+####`
+`+######`
 
-`-####`
+`-######`
 
 or a four-digit positive value without the `+` sign:
 
-`####`
+`######`
 
 Examples of valid input include:
 
-`+1234`
+`+123456`
 
-`-1234`
+`-123456`
 
-`1234`
+`123456`
 
 If a four-digit positive value such as:
 
-`1234`
+`123456`
 
 is entered, UVSim automatically stores it as:
 
-`+1234`
+`+123456`
 
 Invalid input is rejected and the user remains on the input screen so another value can be entered.
 
@@ -158,11 +161,11 @@ If the input is invalid, execution does not continue until the user enters a val
 
 ### Change Primary color
 
-The `Change Primary Color` button opens a color picker for the user to select the background color of the GUI. This effects the main screen as well as the `Edit File` Screen.
+The `Primary Color` button opens a color picker for the user to select the background color of the GUI. This effects the main screen as well as the `Edit File` Screen.
 
 ### Change Off color
 
-The `Change Off color` button opens a color picker for the user to select the textbox colors and button colors of the GUI. This effects the main screen as well as the `Edit File` Screen.
+The `Off color` button opens a color picker for the user to select the textbox colors and button colors of the GUI. This effects the main screen as well as the `Edit File` Screen.
 
 ### Edit File
 
@@ -182,34 +185,38 @@ Additional validation will be performed when the user clicks `Save` or `Save as`
 
 When the user selects `Save` or `Save as` and all lines of code are valid, the program will be loaded with the new file modifications, ready to run.
 
+### Multiple Files
+
+UVSim Supports opening and running multiple files with the `New Window` button. This button creates a completely new and seperate instance of UVSim in a new Gui window using multiprocessing. Color changes on one Gui will not effect the other and files loaded on one Gui will not effect files opened on the other Gui, these instances of UVSim are completely seperate.
+
 ## Program File Format
 
 UVSim programs are stored in `.txt` files.
 
 Each program instruction must use the following format:
 
-`+####`
+`+######`
 
 or:
 
-`-####`
+`-######`
 
 For example:
 
-`+2010`
+`+020010`
 
 In this instruction:
 
-- `20` is the operation code.
-- `10` is the memory address used by the operation.
+- `020` is the operation code.
+- `010` is the memory address used by the operation.
 
-The CPU contains 100 memory locations numbered `00` through `99`. Program instructions are loaded into memory starting at location `00`. 
+The CPU contains 250 memory locations numbered `000` through `249`. Program instructions are loaded into memory starting at location `000`. 
 
-The user must select a file that is 100 lines of commands long or less. If the user selects a .txt file with more than 100 lines of commands, an error is displayed to the screen.
+The user must select a file that is 250 lines of commands long or less. If the user selects a .txt file with more than 250 lines of commands, an error is displayed to the screen.
 
 Unused memory locations are initialized to:
 
-`+0000`
+`+000000`
 
 Program files themselves must contain properly formatted five-character values. The four-digit shorthand accepted during READ input is intended for user input and should not be used for instructions stored in a program file.
 
@@ -217,18 +224,18 @@ Program files themselves must contain properly formatted five-character values. 
 
 UVSim supports the following commands:
 
-- `10` - READ: Reads a value from the user and stores it in the specified memory location.
-- `11` - WRITE: Displays the value stored in the specified memory location.
-- `20` - LOAD: Loads a value from memory into the accumulator.
-- `21` - STORE: Stores the current accumulator value in a memory location.
-- `30` - ADD: Adds a value from memory to the accumulator.
-- `31` - SUBTRACT: Subtracts a value in memory from the accumulator.
-- `32` - DIVIDE: Divides the accumulator by a value stored in memory.
-- `33` - MULTIPLY: Multiplies the accumulator by a value stored in memory.
-- `40` - BRANCH: Moves execution to a specified memory location.
-- `41` - BRANCHNEG: Moves execution to a specified memory location if the accumulator is negative.
-- `42` - BRANCHZERO: Moves execution to a specified memory location if the accumulator is zero.
-- `43` - HALT: Stops program execution.
+- `010` - READ: Reads a value from the user and stores it in the specified memory location.
+- `011` - WRITE: Displays the value stored in the specified memory location.
+- `020` - LOAD: Loads a value from memory into the accumulator.
+- `21` - STORE: Stores the current accumulator value in a memory loc0ation.
+- `030` - ADD: Adds a value from memory to the accumulator.
+- `031` - SUBTRACT: Subtracts a value in memory from the accumulator.
+- `032` - DIVIDE: Divides the accumulator by a value stored in memory.
+- `033` - MULTIPLY: Multiplies the accumulator by a value stored in memory.
+- `040` - BRANCH: Moves execution to a specified memory location.
+- `041` - BRANCHNEG: Moves execution to a specified memory location if the accumulator is negative.
+- `042` - BRANCHZERO: Moves execution to a specified memory location if the accumulator is zero.
+- `043` - HALT: Stops program execution.
 
 ## READ Input
 
@@ -236,23 +243,23 @@ The READ command allows a UVSim program to request a value from the user.
 
 The accepted input formats are:
 
-`+####`
+`+######`
 
-`-####`
+`-######`
 
 or:
 
-`####`
+`######`
 
 The four-digit version is treated as a positive value.
 
 For example:
 
-`1234`
+`123456`
 
 is stored as:
 
-`+1234`
+`+123456`
 
 The value is stored in the memory address specified by the READ instruction.
 
@@ -266,17 +273,17 @@ When the program is running through the GUI, WRITE output appears in the GUI out
 
 For example, if a memory location contains:
 
-`+1234`
+`+012034`
 
 a WRITE instruction for that address displays:
 
-`+1234`
+`+012034`
 
 The CPU uses a shared output method so program output is sent to the GUI when the GUI is active. If the CPU is being used without a GUI, output can instead be printed to the terminal.
 
 ## Math and Overflow
 
-The CPU uses signed four-digit values.
+The CPU uses signed six-digit values.
 
 ADD, SUBTRACT, MULTIPLY, and DIVIDE use the value currently stored in the accumulator together with a value stored in memory.
 
@@ -284,21 +291,21 @@ If an arithmetic operation produces a result containing more than four digits, t
 
 For example:
 
-`12345`
+`1234567`
 
 becomes:
 
-`+2345`
+`+234567`
 
 Negative results follow the same four-digit rule while preserving the negative sign.
 
 For example:
 
-`-12345`
+`-1234567`
 
 becomes:
 
-`-2345`
+`-234567`
 
 DIVIDE also checks for division by zero.
 
@@ -382,10 +389,27 @@ It handles:
 - Enabling and disabling controls when input is required
 - Editing capabilities
 - Saving file edits
+- Opening new instances of UVSim
 
 ### Utility Functions
 
 `functions.py` contains shared validation functions used by the CPU and GUI.
+
+`checkValidInput6chars(input)` checks for a sign followed by six digits, such as:
+
+`+123456`
+
+or:
+
+`-123456`
+
+`checkValidInput7chars(input)` checks for exactly six digits without a sign, such as:
+
+`123456`
+
+
+##
+Checks for 4 digit inputs is also included in `functions.py` to support the old 4 digit file format
 
 `checkValidInput5chars(input)` checks for a sign followed by four digits, such as:
 
@@ -399,7 +423,7 @@ or:
 
 `1234`
 
-Four-digit input is interpreted as a positive value when it is entered by the user.
+Six-digit input is interpreted as a positive value when it is entered by the user.
 
 ## Error Handling
 
@@ -469,6 +493,18 @@ A typical use of the application is:
 9. View WRITE results in the output box.
 10. The program continues until a HALT instruction is reached.
 11. Click `Open File` to choose a new file to run or `Reset` then `Run` again to rerun the same file.
+
+## Old Formats (4 Digit Formats)
+UVSim originally ran with a 4 digit format such as
+`1025`, but has since been updated to support a 6 digit format such as `010025`.
+
+To maintain support for previously made files with a 4 digit format, UVSim will automatically convert 4 digit commands and integers to the new 6 digit format within the program.
+
+Two important cavets for 4 digit command files:
+
+**1. The original file with the 4 digit format will not be changed**
+
+**2. Mixing and matching 4 and 6 digit formats in the same file DOES NOT WORK. Additonally if running a a file with the old 4 digit format, inputs MUST be 4 digits**
 
 ## Group Members
 
