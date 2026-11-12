@@ -181,9 +181,12 @@ class CommunicationUnit:
                 user_input = ""
 
                 if self.cpu._fileFormat == "six-digit":
-                    user_input = input("Enter a value (format +/-000000): ")
+                    user_input = input("Enter a value (format +/-######): ")
+                    user_input = convertNumToCommand(user_input, self.cpu._fileFormat)
+                    
                 elif self.cpu._fileFormat == "four-digit":
-                    user_input = input("Enter a value (format +/-0000): ")
+                    user_input = input("Enter a value (format +/-####): ")
+                    user_input = convertNumToCommand(user_input, self.cpu._fileFormat)
 
                 if validateInputSigned(user_input):
                     self.cpu.memory[int(address)] = user_input
