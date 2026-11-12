@@ -46,8 +46,9 @@ class Gui:
 
         #Input related buttons and fields
         self.input_field_text = Label(self.root, text="When needed, input text in the box below",font=('Arial', 8), width=36, bg=self.off_color)
-        self.input_field = Entry(self.root, width=24, font=('Arial', 13), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
-        self.enter_value = Button(self.root, text="Enter", font=('Arial', 13), width=6, height=1, state="disabled", bg=self.off_color, command=self.get_input)
+        self.input_container = Label(self.root,font=('Arial', 8),width=10)
+        self.input_field = Entry(self.input_container, width=16, font=('Arial', 13), state="disabled", bg=self.off_color, disabledbackground=self.off_color)
+        self.enter_value = Button(self.input_container, text="Enter", font=('Arial', 13), width=6, height=1, state="disabled", bg=self.off_color, command=self.get_input)
 
         #Setup for color changer
         self.primary_color_items = [self.root,self.output_box_margin]
@@ -104,8 +105,9 @@ class Gui:
         
         #Input field buttons
         self.input_field_text.grid(row=2,column=2,columnspan=3,padx=(10,10))
-        self.input_field.grid(row=3,column=2,ipady=7,columnspan=3,padx=(10,10))
-        self.enter_value.grid(row=3,column=4,padx=(160,0))
+        self.input_container.grid(row=3,column=2,columnspan=3)
+        self.input_field.grid(row=0,column=0,ipady=7)
+        self.enter_value.grid(row=0,column=1)
 
     #user input classes
     def file_select(self):
