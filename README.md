@@ -224,7 +224,7 @@ UVSim supports the following commands:
 - `010` - READ: Reads a value from the user and stores it in the specified memory location.
 - `011` - WRITE: Displays the value stored in the specified memory location.
 - `020` - LOAD: Loads a value from memory into the accumulator.
-- `21` - STORE: Stores the current accumulator value in a memory loc0ation.
+- `021` - STORE: Stores the current accumulator value in a memory loc0ation.
 - `030` - ADD: Adds a value from memory to the accumulator.
 - `031` - SUBTRACT: Subtracts a value in memory from the accumulator.
 - `032` - DIVIDE: Divides the accumulator by a value stored in memory.
@@ -233,6 +233,8 @@ UVSim supports the following commands:
 - `041` - BRANCHNEG: Moves execution to a specified memory location if the accumulator is negative.
 - `042` - BRANCHZERO: Moves execution to a specified memory location if the accumulator is zero.
 - `043` - HALT: Stops program execution.
+
+These are the commands used if each line of code in the file contains six digits. The program also supports backwards compatability with files containing only four-digit code lines. In that case, the commands would not contain the leading zero (e.g. `10` for READ instead of `010`).
 
 ## READ Input
 
