@@ -111,6 +111,8 @@ class Gui:
     #user input classes
     def file_select(self):
         self.root.filename = filedialog.askopenfilename(title="Select a file",initialdir='/',filetypes=[('txt files', '*.txt')])
+        self.print_error("")
+
         try:
             if self.root.filename == '':
                 raise FileNotFoundError("Please select a file")
