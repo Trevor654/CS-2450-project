@@ -10,13 +10,10 @@ The following are required to run UVSim:
 
 - Python 3
 - Tkinter
-- `multiprocessing` to run multiple Guis
 - The included `functions.py` file
 - `pytest`, only if running the unit tests
 
 Tkinter is part of the Python standard library and is included with most standard Python installations. No additional third-party GUI framework is required.
-
-`multiprocessing` is available in the Python standard library in every python version past version 2.6. No additional setup is required for it to run.
 
 The project does not require any additional third-party modules to run the GUI.
 
@@ -127,7 +124,7 @@ The user may enter a value using either of these formats:
 
 `-######`
 
-or a four-digit positive value without the `+` sign:
+or a six-digit positive value without the `+` sign:
 
 `######`
 
@@ -139,7 +136,7 @@ Examples of valid input include:
 
 `123456`
 
-If a four-digit positive value such as:
+If a six-digit positive value such as:
 
 `123456`
 
@@ -187,7 +184,7 @@ When the user selects `Save` or `Save as` and all lines of code are valid, the p
 
 ### Multiple Files
 
-UVSim Supports opening and running multiple files with the `New Window` button. This button creates a completely new and seperate instance of UVSim in a new Gui window using multiprocessing. Color changes on one Gui will not effect the other and files loaded on one Gui will not effect files opened on the other Gui, these instances of UVSim are completely seperate.
+UVSim Supports opening and running multiple files with the `New Window` button. This button creates a new window so that multiple files can be run. Color changes on one window will not effect the other and files loaded on one window will not effect files opened on the other window.
 
 ## Program File Format
 
@@ -218,7 +215,7 @@ Unused memory locations are initialized to:
 
 `+000000`
 
-Program files themselves must contain properly formatted five-character values. The four-digit shorthand accepted during READ input is intended for user input and should not be used for instructions stored in a program file.
+Program files themselves must contain properly formatted seven-character values. The six-digit shorthand accepted during READ input is intended for user input and should not be used for instructions stored in a program file.
 
 ## Supported Commands
 
@@ -251,7 +248,7 @@ or:
 
 `######`
 
-The four-digit version is treated as a positive value.
+The six-digit version is treated as a positive value.
 
 For example:
 
@@ -287,7 +284,7 @@ The CPU uses signed six-digit values.
 
 ADD, SUBTRACT, MULTIPLY, and DIVIDE use the value currently stored in the accumulator together with a value stored in memory.
 
-If an arithmetic operation produces a result containing more than four digits, the leading digits are truncated.
+If an arithmetic operation produces a result containing more than six digits, the leading digits are truncated.
 
 For example:
 
@@ -297,7 +294,7 @@ becomes:
 
 `+234567`
 
-Negative results follow the same four-digit rule while preserving the negative sign.
+Negative results follow the same six-digit rule while preserving the negative sign.
 
 For example:
 
@@ -355,7 +352,7 @@ The `ArithmeticUnit` handles:
 
 These operations use CPU memory and the accumulator.
 
-Arithmetic results are stored back in the accumulator using the signed four-digit UVSim format.
+Arithmetic results are stored back in the accumulator using the signed six-digit UVSim format.
 
 ### ControlUnit
 
@@ -407,9 +404,11 @@ or:
 
 `123456`
 
+Six-digit input is interpreted as a positive value when it is entered by the user.
+
 
 ##
-Checks for 4 digit inputs is also included in `functions.py` to support the old 4 digit file format
+4 digit inputs checks are also included in `functions.py` to support the old 4 digit file format
 
 `checkValidInput5chars(input)` checks for a sign followed by four digits, such as:
 
@@ -423,7 +422,7 @@ or:
 
 `1234`
 
-Six-digit input is interpreted as a positive value when it is entered by the user.
+Four-digit input is interpreted as a positive value when it is entered by the user.
 
 ## Error Handling
 
