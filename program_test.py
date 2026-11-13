@@ -209,3 +209,96 @@ def test_store_invalid_address():
     cpu = CPU("Testing_files/testfile.txt")
     with pytest.raises(ValueError):
         cpu._controlUnit.STORE(invalid_address)
+
+def run_to_halt(cpu):
+    halted = False
+    pointer = 0
+    while not halted:
+        halted, pointer, need_input, print_val = cpu.run(pointer)
+
+def test_six_digit_add_no_longer_overflows():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+050000"
+    cpu.memory[10] = "+050000"
+    cpu._arithmeticUnit.ADD(10)
+    assert cpu._accumulator == "+100000"
+
+def test_six_digit_add_positive_overflow():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+999999"
+    cpu.memory[10] = "+000002"
+    cpu._arithmeticUnit.ADD(10)
+    assert cpu._accumulator == "+000001"
+
+def test_six_digit_subtract_negative_overflow():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "-999999"
+    cpu.memory[10] = "+234567"
+    cpu._arithmeticUnit.SUBTRACT(10)
+    assert cpu._accumulator == "-234566"
+
+def test_six_digit_multiply():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+005000"
+    cpu.memory[10] = "+000003"
+    cpu._arithmeticUnit.MULTIPLY(10)
+    assert cpu._accumulator == "+015000"
+
+def test_six_digit_multiply_positive_overflow():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+500000"
+    cpu.memory[10] = "+000003"
+    cpu._arithmeticUnit.MULTIPLY(10)
+    assert cpu._accumulator == "+500000"
+
+def test_six_digit_multiply_negative_overflow():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "-400000"
+    cpu.memory[10] = "+000003"
+    cpu._arithmeticUnit.MULTIPLY(10)
+    assert cpu._accumulator == "-200000"
+
+def test_six_digit_divide():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+900000"
+    cpu.memory[10] = "-000003"
+    cpu._arithmeticUnit.DIVIDE(10)
+    assert cpu._accumulator == "-300000"
+
+def test_four_digit_still_overflows_at_four_digits():
+    cpu = CPU("Testing_files/Test1.txt")
+    cpu._accumulator = "+5000"
+    cpu.memory[10] = "+6000"
+    cpu._arithmeticUnit.ADD(10)
+    assert cpu._accumulator == "+1000"
+
+def test_six_digit_branchzero():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    cpu._accumulator = "+100000"
+    assert cpu._controlUnit.BRANCHZERO(50) == False
+    cpu._accumulator = "+000000"
+    assert cpu._controlUnit.BRANCHZERO(50) == 49
+
+def test_six_digit_program_run(capsys):
+    cpu = CPU("Testing_files/test_six_digit_run.txt")
+    run_to_halt(cpu)
+    assert cpu.memory[7] == "+110000"
+    assert "+110000" in capsys.readouterr().out
+
+def test_four_digit_program_run(capsys):
+    cpu = CPU("Testing_files/test_four_digit_run.txt")
+    assert cpu._fileFormat == "four-digit"
+    run_to_halt(cpu)
+    assert cpu.memory[7] == "+1000"
+    assert "+1000" in capsys.readouterr().out
+
+def test_mixed_format_rejected():
+    with pytest.raises(ValueError, match=r"File mixes four-digit and six-digit words \(line 3: \+1007\)"):
+        CPU("Testing_files/test_mixed_format_six.txt")
+    with pytest.raises(ValueError, match=r"File mixes four-digit and six-digit words \(line 3: \+020007\)"):
+        CPU("Testing_files/test_mixed_format_four.txt")
+
+def test_trailing_blank_line_allowed():
+    cpu = CPU("Testing_files/test_trailing_blank_line.txt")
+    assert cpu._fileFormat == "six-digit"
+    assert cpu.memory[5] == "+050000"

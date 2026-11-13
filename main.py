@@ -117,6 +117,9 @@ class FileHandler:
         except:
             raise FileNotFoundError("File '" + filename + "' does not exist or the filepath is invalid")
 
+        while len(commands) > 1 and commands[-1].strip() == '':
+            commands.pop()
+
         # See what the file format is and change it to 'four-digit' if the user inputs a 4-digit command
         defaultCommand = '+000000'
         if len(commands) > 0:
@@ -131,6 +134,11 @@ class FileHandler:
         # Memory only has 250 spots (000 - 249), so the file can't have more than 250 lines
         if len(commands) > self.cpu.maxFileSize:
             raise ValueError(f"File is over the max size of {self.cpu.maxFileSize} entries")
+
+        expectedLength = 7 if self.cpu._fileFormat == "six-digit" else 5
+        for i in range(len(commands)):
+            if len(commands[i]) in [5, 7] and len(commands[i]) != expectedLength:
+                raise ValueError(f"File mixes four-digit and six-digit words (line {i + 1}: {commands[i]}). A file must use only one format")
 
         # Loading in the commands from the file into the dictionary
         validCommands = ['010','011','020','021','030','031','032','033','040','041','042','043']
@@ -221,17 +229,18 @@ class ArithmeticUnit:
         acc_value = int(self.cpu._accumulator)
         result = acc_value + mem_value
 
-        truncated_result = abs(result) % 10000
+        overflow_limit = 1000000 if self.cpu._fileFormat == "six-digit" else 10000
+        overflow_result = abs(result) % overflow_limit
 
         # For testing
-        # print(f"address: {address}\nmem_val: {mem_value}\nacc_val: {acc_value}\nresult: {result}\ntruncated_result: {truncated_result}")
+        # print(f"address: {address}\nmem_val: {mem_value}\nacc_val: {acc_value}\nresult: {result}\noverflow_result: {overflow_result}")
 
         fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '+' + str(overflow_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '-' + str(overflow_result).zfill(fill_val)
     
     #subtracts value in memory from the accumulator & then stores it
         
@@ -240,13 +249,14 @@ class ArithmeticUnit:
         acc_value = int(self.cpu._accumulator)
         result = acc_value - mem_value
 
-        truncated_result = abs(result) % 10000
+        overflow_limit = 1000000 if self.cpu._fileFormat == "six-digit" else 10000
+        overflow_result = abs(result) % overflow_limit
         fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '+' + str(overflow_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '-' + str(overflow_result).zfill(fill_val)
 
     #divides value in memory from the accumulator & then stores it
 
@@ -257,13 +267,14 @@ class ArithmeticUnit:
         acc_value = int(self.cpu._accumulator)
         result = int(acc_value / mem_value)
 
-        truncated_result = abs(result) % 10000
+        overflow_limit = 1000000 if self.cpu._fileFormat == "six-digit" else 10000
+        overflow_result = abs(result) % overflow_limit
         fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '+' + str(overflow_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '-' + str(overflow_result).zfill(fill_val)
 
     #multiplies value in memory from the accumulator & then stores it
 
@@ -272,13 +283,14 @@ class ArithmeticUnit:
         acc_value = int(self.cpu._accumulator)
         result = acc_value * mem_value
         
-        truncated_result = abs(result) % 10000
+        overflow_limit = 1000000 if self.cpu._fileFormat == "six-digit" else 10000
+        overflow_result = abs(result) % overflow_limit
         fill_val = 6 if self.cpu._fileFormat == "six-digit" else 4
 
         if result >= 0:
-            self.cpu._accumulator = '+' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '+' + str(overflow_result).zfill(fill_val)
         else:
-            self.cpu._accumulator = '-' + str(truncated_result).zfill(fill_val)
+            self.cpu._accumulator = '-' + str(overflow_result).zfill(fill_val)
 
 class ControlUnit:
 
@@ -317,7 +329,7 @@ class ControlUnit:
 
     def BRANCHZERO(self, value):
         '''branches to a specified point in memory, but only if the accumulator is positive'''
-        if '0000' in self.cpu._accumulator:
+        if int(self.cpu._accumulator) == 0:
             return self.BRANCH(value)
         else:
             return False
