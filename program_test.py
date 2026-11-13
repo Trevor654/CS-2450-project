@@ -280,13 +280,13 @@ def test_six_digit_branchzero():
     assert cpu._controlUnit.BRANCHZERO(50) == 49
 
 def test_six_digit_program_run(capsys):
-    cpu = CPU("Testing_files/test_six_digit_run.txt")
+    cpu = CPU("Testing_files/test_six_digit.txt")
     run_to_halt(cpu)
     assert cpu.memory[7] == "+110000"
     assert "+110000" in capsys.readouterr().out
 
 def test_four_digit_program_run(capsys):
-    cpu = CPU("Testing_files/test_four_digit_run.txt")
+    cpu = CPU("Testing_files/test_four_digit.txt")
     assert cpu._fileFormat == "four-digit"
     run_to_halt(cpu)
     assert cpu.memory[7] == "+1000"
@@ -294,11 +294,33 @@ def test_four_digit_program_run(capsys):
 
 def test_mixed_format_rejected():
     with pytest.raises(ValueError, match=r"File mixes four-digit and six-digit words \(line 3: \+1007\)"):
-        CPU("Testing_files/test_mixed_format_six.txt")
+        CPU("Testing_files/test_mixed_six.txt")
     with pytest.raises(ValueError, match=r"File mixes four-digit and six-digit words \(line 3: \+020007\)"):
-        CPU("Testing_files/test_mixed_format_four.txt")
+        CPU("Testing_files/test_mixed_four.txt")
 
-def test_trailing_blank_line_allowed():
-    cpu = CPU("Testing_files/test_trailing_blank_line.txt")
+def test_end_blank_line_allowed():
+    cpu = CPU("Testing_files/test_end_blank.txt")
     assert cpu._fileFormat == "six-digit"
     assert cpu.memory[5] == "+050000"
+
+def test_invalid_address_rejected_on_load():
+    with pytest.raises(ValueError, match=r"Invalid address in the given file \(line 2: \+020300\)"):
+        CPU("Testing_files/test_invalid_address.txt")
+
+def test_invalid_address_rejected_at_runtime():
+    cpu = CPU("Testing_files/test_runtime_invalid_address.txt")
+    with pytest.raises(ValueError, match=r"Invalid address 300 at line 002"):
+        run_to_halt(cpu)
+
+def test_branch_to_zero():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    assert cpu._controlUnit.BRANCH('000') == -1
+    assert cpu._controlUnit.BRANCH('249') == 248
+    assert cpu._controlUnit.BRANCH('250') == False
+
+def test_run_past_end_of_memory():
+    cpu = CPU("Testing_files/Test1_six_digit.txt")
+    for i in range(cpu.maxFileSize):
+        cpu.memory[i] = "+020000"
+    with pytest.raises(ValueError, match=r"Program ran past address 249 without a HALT command"):
+        run_to_halt(cpu)

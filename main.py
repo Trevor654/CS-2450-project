@@ -35,6 +35,8 @@ class CPU:
         print_val = None
 
         while not halted:
+            if pointer >= self.maxFileSize:
+                raise ValueError(f"Program ran past address {self.maxFileSize - 1} without a HALT command")
             fullCommandString = self.memory[pointer]      # This goes through the commands one by one
             command = fullCommandString[1:4] if self._fileFormat == "six-digit" else fullCommandString[1:3]             # The command in from '+####' or '+######'. 
             value = fullCommandString[4:7] if self._fileFormat == "six-digit" else fullCommandString[3:5]               # The last two or three numbers of the command, AKA the value of the command
@@ -42,7 +44,10 @@ class CPU:
             commandCheck = command
             if self._fileFormat == "four-digit":
                 commandCheck = "0" + commandCheck
-            
+
+            if commandCheck in ['010','011','020','021','030','031','032','033','040','041','042'] and int(value) >= self.maxFileSize:
+                raise ValueError(f"Invalid address {value} at line {pointer:03d} ({fullCommandString}). Addresses must be between 000 and {self.maxFileSize - 1}")
+
             match commandCheck:
                 case '010':
                     got_input = self._communicationUnit.READ(value,gui_input)
@@ -169,6 +174,8 @@ class FileHandler:
                     errorStringList = ", ".join(errors)
                     errorString += errorStringList
                     raise ValueError(errorString)
+                if self.cpu._fileFormat == "six-digit" and command != '043' and int(commands[i][4:7]) >= self.cpu.maxFileSize:
+                    raise ValueError(f"Invalid address in the given file (line {i + 1}: {commands[i]}). Addresses must be between 000 and {self.cpu.maxFileSize - 1}")
                 # Command Valid, continue
                 self.cpu.memory[i] = commands[i]
                 if command == '043':
@@ -307,7 +314,7 @@ class ControlUnit:
         '''branches to a specified point in memory'''
         try:
             value = int(value)
-            if 1 <= value < self.cpu.maxFileSize:
+            if 0 <= value < self.cpu.maxFileSize:
                 return int(value) - 1        #subtract one here, because one will be added at the end of the run loop by default
             else:
                 self.cpu.output(f'Pick a value less than {self.cpu.maxFileSize}, but more than -1 to branch to')

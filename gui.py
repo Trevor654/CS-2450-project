@@ -142,7 +142,12 @@ class Gui:
         self.run_button.config(state='disabled')   
 
         #creates a new cpu each time the function runs
-        self.created_cpu = self.cpu_class(self.file_path, self)
+        try:
+            self.created_cpu = self.cpu_class(self.file_path, self)
+        except Exception as e:
+            self.print_error(e)
+            self.reset_button.config(state='normal')
+            return
         self.gui_run()
 
     def gui_run(self, pointer_int=0, input_recieved=''):
@@ -156,40 +161,46 @@ class Gui:
         self.input_field.config(state='disabled')
         self.enter_value.config(state='disabled')
 
-        halted = False
+        try:
+            halted = False
         
-        while not halted:
-            #Recieves a tuple from the cpu run function detailing
-            # (halted (boolean), pointer (int), need_input (boolean), print_val (string))
-            #
-            # Using that tuple it determines whether the file is done reading or not, where the pointer is
-            # for the next line to read, whether it needs to wait for input from the user, and if it does need
-            # input, what to ask the user for in the label above the entry box
+            while not halted:
+                #Recieves a tuple from the cpu run function detailing
+                # (halted (boolean), pointer (int), need_input (boolean), print_val (string))
+                #
+                # Using that tuple it determines whether the file is done reading or not, where the pointer is
+                # for the next line to read, whether it needs to wait for input from the user, and if it does need
+                # input, what to ask the user for in the label above the entry box
 
-            # print(f' input pre check {input_recieved}')
-            if input_recieved == '':
-                cpu_tuple = self.created_cpu.run(self.pointer)
-                # print(f'got no input')
-            else:
-                cpu_tuple = self.created_cpu.run(self.pointer,input_recieved)
-                # print(f'got {input_recieved}')
-                input_recieved = ''
-            # print(cpu_tuple)
-            halted = cpu_tuple[0]
-            self.pointer = cpu_tuple[1]
-            need_input = cpu_tuple[2]
-            print_val = cpu_tuple[3]
+                # print(f' input pre check {input_recieved}')
+                if input_recieved == '':
+                    cpu_tuple = self.created_cpu.run(self.pointer)
+                    # print(f'got no input')
+                else:
+                    cpu_tuple = self.created_cpu.run(self.pointer,input_recieved)
+                    # print(f'got {input_recieved}')
+                    input_recieved = ''
+                # print(cpu_tuple)
+                halted = cpu_tuple[0]
+                self.pointer = cpu_tuple[1]
+                need_input = cpu_tuple[2]
+                print_val = cpu_tuple[3]
 
-            if need_input == True:
-                # sets the input field and enter button to active and makes the program wait for input before continuing
-                self.change_input_label(print_val)
-                # self.input_field.config(bg="yellow")
-                self.input_field.config(state='normal')
-                self.enter_value.config(state='normal')
-                break
+                if need_input == True:
+                    # sets the input field and enter button to active and makes the program wait for input before continuing
+                    self.change_input_label(print_val)
+                    # self.input_field.config(bg="yellow")
+                    self.input_field.config(state='normal')
+                    self.enter_value.config(state='normal')
+                    break
 
-            if halted == True:
-                self.reset_button.config(state='normal')
+                if halted == True:
+                    self.reset_button.config(state='normal')
+        except Exception as e:
+            self.print_error(e)
+            self.input_field.config(state='disabled')
+            self.enter_value.config(state='disabled')
+            self.reset_button.config(state='normal')
 
     def gui_reset(self):
         self.run_button.config(state="normal")
