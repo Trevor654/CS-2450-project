@@ -80,7 +80,7 @@ class Gui:
     #display classes
 
     def new_window(self):
-        multiprocessing.get_context('spawn').Process(target=Gui, args=(self.cpu_class,)).start()
+        Gui(self.cpu_class)
 
     def setup_gui_display(self):
 
