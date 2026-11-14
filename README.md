@@ -144,6 +144,16 @@ is entered, UVSim automatically stores it as:
 
 `+123456`
 
+UVSim will also autofill missing digits with zeros if the input is less than six digits excluding the +/- sign. For example:
+
+`123`
+
+will be stored as
+
+`+000123`
+
+In the instance of an four digit file format the input will only be autofilled to 4 digits and the +/- sign.
+
 Invalid input is rejected and the user remains on the input screen so another value can be entered.
 
 ### Enter
@@ -503,9 +513,9 @@ To maintain support for previously made files with a 4 digit format, UVSim will 
 
 Two important cavets for 4 digit command files:
 
-**1. The original file with the 4 digit format will not be changed**
+**1. The original file with the 4 digit format will not be changed.**
 
-**2. Mixing and matching 4 and 6 digit formats in the same file DOES NOT WORK. Additonally if running a a file with the old 4 digit format, inputs MUST be 4 digits**
+**2. Mixing and matching 4 and 6 digit formats in the same file DOES NOT WORK. Additonally if running a a file with the old 4 digit format, inputs MUST be 4 digits.**
 
 ## Group Members
 
